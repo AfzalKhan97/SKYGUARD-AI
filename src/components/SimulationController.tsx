@@ -9,13 +9,24 @@ import {
   WifiOff, 
   CloudLightning,
   ChevronRight,
-  Sliders
+  Sliders,
+  Zap,
+  RotateCcw,
+  Sparkles
 } from 'lucide-react';
 import { SimulationScenario } from '../types';
 import { useStation } from '../context/StationContext';
 
 export const SimulationController: React.FC = () => {
-  const { currentScenario, setScenario, setCurrentTab, setSelectedStationId } = useStation();
+  const { 
+    currentScenario, 
+    setScenario, 
+    setCurrentTab, 
+    setSelectedStationId,
+    setIsControlledSimModalOpen,
+    activeControlledSim,
+    resetControlledSimulation
+  } = useStation();
   const [isExpanded, setIsExpanded] = useState(true);
 
   const scenarios: { 
@@ -130,11 +141,43 @@ export const SimulationController: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs">
-          <span className="text-slate-500 text-[11px]">Active Condition:</span>
-          <span className="font-semibold text-blue-900 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 text-[11px]">
-            {active.label}
-          </span>
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          {/* Active Simulation indicator & Reset button */}
+          {activeControlledSim ? (
+            <div className="flex items-center gap-1.5">
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300 animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-rose-600"></span>
+                Simulation Active
+              </span>
+              <button
+                id="reset-simulation-top-btn"
+                onClick={resetControlledSimulation}
+                title="Reset simulation and restore original readings"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-300 transition"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Simulation</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1 text-[11px]">
+              <span className="text-slate-500">Active Condition:</span>
+              <span className="font-semibold text-blue-900 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                {active.label}
+              </span>
+            </div>
+          )}
+
+          {/* Test Anomaly Simulation Primary Modal Trigger */}
+          <button
+            id="open-test-anomaly-simulation-btn"
+            onClick={() => setIsControlledSimModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-900 hover:bg-blue-950 text-white text-xs font-bold shadow-xs hover:shadow transition"
+          >
+            <Zap className="w-3.5 h-3.5 fill-current text-amber-400" />
+            <span>Test Anomaly Simulation</span>
+          </button>
+
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="text-slate-400 hover:text-slate-700 text-xs px-1"
@@ -147,7 +190,7 @@ export const SimulationController: React.FC = () => {
       {isExpanded && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 pt-3">
           {scenarios.map((scenario) => {
-            const isCurrent = currentScenario === scenario.id;
+            const isCurrent = !activeControlledSim && currentScenario === scenario.id;
             const Icon = scenario.icon;
 
             return (
@@ -193,35 +236,72 @@ export const SimulationController: React.FC = () => {
       )}
 
       {/* Real-time Pipeline Flow Banner */}
-      <div className="mt-3 bg-slate-50 border border-slate-200 rounded-md p-2.5 text-xs">
+      <div className={`mt-3 rounded-md p-2.5 text-xs border ${
+        activeControlledSim 
+          ? 'bg-rose-50/90 border-rose-300 text-rose-950' 
+          : 'bg-slate-50 border-slate-200 text-slate-600'
+      }`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
           <div className="flex items-start md:items-center gap-2">
-            <span className="text-[10px] font-bold tracking-wider uppercase bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded shrink-0">
-              Pipeline State
+            <span className={`text-[10px] font-bold tracking-wider uppercase px-1.5 py-0.5 rounded shrink-0 ${
+              activeControlledSim ? 'bg-rose-600 text-white' : 'bg-slate-200 text-slate-700'
+            }`}>
+              {activeControlledSim ? 'Simulation Pipeline Result' : 'Pipeline State'}
             </span>
-            <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-600">
-              <span>Station: <strong className="text-slate-900">{active.station}</strong></span>
-              <span className="text-slate-300">•</span>
-              <span>Observed: <strong className="text-rose-700 font-mono">{active.observed}</strong></span>
-              <span className="text-slate-300">•</span>
-              <span>Corrected: <strong className="text-emerald-700 font-mono">{active.estimated}</strong></span>
-              <span className="text-slate-300">•</span>
-              <span className="text-slate-800 font-medium">{active.rootCause}</span>
+            <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+              {activeControlledSim ? (
+                <>
+                  <span className="font-bold text-rose-900">{activeControlledSim.anomalyTitle}</span>
+                  <span className="text-rose-300">•</span>
+                  <span>Station: <strong className="text-slate-900">{activeControlledSim.stationName}</strong></span>
+                  <span className="text-rose-300">•</span>
+                  <span>Observed: <strong className="text-rose-700 font-mono">{activeControlledSim.injectedValue}</strong></span>
+                  <span className="text-rose-300">•</span>
+                  <span>Expected: <strong className="text-emerald-700 font-mono">{activeControlledSim.expectedValue}</strong></span>
+                  <span className="text-rose-300">•</span>
+                  <span>AI Confidence: <strong className="text-blue-900 font-mono">{activeControlledSim.confidence}%</strong></span>
+                  <span className="text-rose-300">•</span>
+                  <span className="text-slate-800 font-medium">Likely Cause: {activeControlledSim.likelyCause}</span>
+                </>
+              ) : (
+                <>
+                  <span>Station: <strong className="text-slate-900">{active.station}</strong></span>
+                  <span className="text-slate-300">•</span>
+                  <span>Observed: <strong className="text-rose-700 font-mono">{active.observed}</strong></span>
+                  <span className="text-slate-300">•</span>
+                  <span>Corrected: <strong className="text-emerald-700 font-mono">{active.estimated}</strong></span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-slate-800 font-medium">{active.rootCause}</span>
+                </>
+              )}
             </div>
           </div>
 
-          <button
-            onClick={() => {
-              setSelectedStationId(active.stationId);
-              setCurrentTab('stations');
-            }}
-            className="self-end md:self-auto inline-flex items-center gap-1 text-[11px] font-semibold text-blue-900 hover:text-blue-950 hover:underline"
-          >
-            Inspect {active.station.split(' ')[0]} Diagnosis
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-2 self-end md:self-auto">
+            {activeControlledSim && (
+              <button
+                id="reset-sim-banner-btn"
+                onClick={resetControlledSimulation}
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-800 hover:text-rose-950 bg-white px-2 py-0.5 rounded border border-rose-300 hover:bg-rose-50"
+              >
+                <RotateCcw className="w-3 h-3" />
+                Reset
+              </button>
+            )}
+            <button
+              onClick={() => {
+                setSelectedStationId(activeControlledSim ? activeControlledSim.stationId : active.stationId);
+                setCurrentTab('stations');
+              }}
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-900 hover:text-blue-950 hover:underline"
+            >
+              Inspect {(activeControlledSim ? activeControlledSim.stationName : active.station).split(' ')[0]} Diagnosis
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </section>
   );
 };
+

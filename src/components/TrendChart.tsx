@@ -26,11 +26,18 @@ export const TrendChart: React.FC<TrendChartProps> = ({
   title, 
   showStationSelector = true 
 }) => {
-  const { selectedStation, stations, setSelectedStationId } = useStation();
+  const { selectedStation, stations, setSelectedStationId, preferredChartParam } = useStation();
   const activeStation = propStation || selectedStation || stations[0];
 
-  const [activeParam, setActiveParam] = useState<ParameterType>('temperature');
+  const [activeParam, setActiveParam] = useState<ParameterType>(preferredChartParam || 'temperature');
   const [showEstimatedOverlay, setShowEstimatedOverlay] = useState<boolean>(true);
+
+  // Sync when preferredChartParam changes from simulation injection
+  React.useEffect(() => {
+    if (preferredChartParam) {
+      setActiveParam(preferredChartParam);
+    }
+  }, [preferredChartParam]);
 
   const history = activeStation.history || [];
 
@@ -43,7 +50,7 @@ export const TrendChart: React.FC<TrendChartProps> = ({
       anomalyColor: '#e11d48', // Rose 600
       normalMin: 22,
       normalMax: 38,
-      yDomain: [15, 52],
+      yDomain: [0, 60],
       icon: Thermometer,
     },
     humidity: {
@@ -53,7 +60,7 @@ export const TrendChart: React.FC<TrendChartProps> = ({
       anomalyColor: '#e11d48',
       normalMin: 40,
       normalMax: 90,
-      yDomain: [10, 100],
+      yDomain: [0, 105],
       icon: Droplets,
     },
     pressure: {
@@ -63,7 +70,7 @@ export const TrendChart: React.FC<TrendChartProps> = ({
       anomalyColor: '#e11d48',
       normalMin: 995,
       normalMax: 1018,
-      yDomain: [900, 1025],
+      yDomain: [910, 1055],
       icon: Gauge,
     },
     communication: {

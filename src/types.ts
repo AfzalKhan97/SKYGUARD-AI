@@ -187,6 +187,31 @@ export type SimulationScenario =
   | 'MISSING_DATA'
   | 'GENUINE_WEATHER_EVENT';
 
+export type ControlledAnomalyType = 'spike' | 'drop' | 'drift' | 'missing';
+
+export interface ActiveSimulationInfo {
+  stationId: string;
+  stationName: string;
+  parameter: ParameterType;
+  anomalyType: ControlledAnomalyType;
+  anomalyTitle: string;
+  currentValue: number | string;
+  injectedValue: number | string;
+  expectedValue: number | string;
+  unit: string;
+  confidence: number;
+  likelyCause: string;
+  severity: AnomalySeverity;
+  timestamp: string;
+}
+
+export interface ControlledSimulationParams {
+  stationId: string;
+  parameter: ParameterType;
+  anomalyType: ControlledAnomalyType;
+  customInjectedValue?: number | string | null;
+}
+
 export type NavigationTab =
   | 'dashboard'
   | 'stations'

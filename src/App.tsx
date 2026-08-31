@@ -14,6 +14,7 @@ import { AnalyticsView } from './components/AnalyticsView';
 import { ReportsView } from './components/ReportsView';
 import { SettingsView } from './components/SettingsView';
 import { LoginView } from './components/LoginView';
+import { ControlledAnomalyModal } from './components/ControlledAnomalyModal';
 
 const MainLayout: React.FC = () => {
   const { currentTab, isAuthenticated } = useStation();
@@ -51,6 +52,9 @@ const MainLayout: React.FC = () => {
         </main>
 
       </div>
+
+      {/* Global Controlled Anomaly Simulation Modal */}
+      <ControlledAnomalyModal />
     </div>
   );
 };

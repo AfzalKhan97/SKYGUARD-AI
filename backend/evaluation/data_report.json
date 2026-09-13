@@ -1,0 +1,198 @@
+{
+  "files": {
+    "real": {
+      "rows": 8760,
+      "columns": [
+        "timestamp",
+        "temperature_c",
+        "relative_humidity_pct",
+        "sea_level_pressure_hpa",
+        "station_level_pressure_hpa",
+        "latitude",
+        "longitude",
+        "elevation_m",
+        "station_id",
+        "station_name",
+        "pressure_hpa",
+        "pressure_type"
+      ],
+      "missing_values": {
+        "timestamp": 0,
+        "temperature_c": 235,
+        "relative_humidity_pct": 235,
+        "sea_level_pressure_hpa": 235,
+        "station_level_pressure_hpa": 5963,
+        "latitude": 235,
+        "longitude": 235,
+        "elevation_m": 235,
+        "station_id": 0,
+        "station_name": 0,
+        "pressure_hpa": 235,
+        "pressure_type": 0
+      },
+      "stations": [
+        "INI0000VIDD",
+        "INI0000VIJO",
+        "INM00042111"
+      ]
+    },
+    "injected": {
+      "rows": 169,
+      "columns": [
+        "station_id",
+        "station_name",
+        "timestamp",
+        "latitude",
+        "longitude",
+        "elevation_m",
+        "temperature_c",
+        "pressure_hpa",
+        "relative_humidity_pct",
+        "pressure_type",
+        "is_injected",
+        "scenario_id",
+        "scenario_type",
+        "target_class",
+        "fault_type",
+        "injection_magnitude"
+      ],
+      "missing_values": {
+        "station_id": 0,
+        "station_name": 0,
+        "timestamp": 0,
+        "latitude": 5,
+        "longitude": 5,
+        "elevation_m": 5,
+        "temperature_c": 18,
+        "pressure_hpa": 18,
+        "relative_humidity_pct": 18,
+        "pressure_type": 0,
+        "is_injected": 0,
+        "scenario_id": 0,
+        "scenario_type": 0,
+        "target_class": 0,
+        "fault_type": 0,
+        "injection_magnitude": 0
+      },
+      "stations": [
+        "INM00042111",
+        "INI0000VIJO",
+        "INI0000VIDD"
+      ]
+    },
+    "training": {
+      "rows": 8929,
+      "columns": [
+        "station_id",
+        "station_name",
+        "timestamp",
+        "latitude",
+        "longitude",
+        "elevation_m",
+        "temperature_c",
+        "pressure_hpa",
+        "relative_humidity_pct",
+        "pressure_type",
+        "is_injected",
+        "scenario_id",
+        "scenario_type",
+        "target_class",
+        "fault_type",
+        "injection_magnitude",
+        "missing_t",
+        "missing_p",
+        "missing_rh"
+      ],
+      "missing_values": {
+        "station_id": 0,
+        "station_name": 0,
+        "timestamp": 0,
+        "latitude": 240,
+        "longitude": 240,
+        "elevation_m": 240,
+        "temperature_c": 253,
+        "pressure_hpa": 253,
+        "relative_humidity_pct": 253,
+        "pressure_type": 0,
+        "is_injected": 0,
+        "scenario_id": 0,
+        "scenario_type": 0,
+        "target_class": 0,
+        "fault_type": 0,
+        "injection_magnitude": 0,
+        "missing_t": 0,
+        "missing_p": 0,
+        "missing_rh": 0
+      },
+      "stations": [
+        "INI0000VIDD",
+        "INI0000VIJO",
+        "INM00042111"
+      ]
+    },
+    "metadata": {
+      "rows": 3,
+      "columns": [
+        "station_id",
+        "station_name",
+        "latitude",
+        "longitude",
+        "elevation_m",
+        "pressure_field_used",
+        "pressure_note"
+      ],
+      "missing_values": {
+        "station_id": 0,
+        "station_name": 0,
+        "latitude": 0,
+        "longitude": 0,
+        "elevation_m": 0,
+        "pressure_field_used": 0,
+        "pressure_note": 0
+      },
+      "stations": [
+        "INI0000VIDD",
+        "INI0000VIJO",
+        "INM00042111"
+      ]
+    }
+  },
+  "summary": {
+    "total_rows": 8929,
+    "stations": [
+      "INI0000VIDD",
+      "INM00042111",
+      "INI0000VIJO"
+    ],
+    "duplicates": 169
+  },
+  "validation_gate_passed": false,
+  "validation_issues": [
+    "Found 169 duplicate observations in training data."
+  ],
+  "class_distribution": {
+    "normal": 8760,
+    "sensor_data_anomaly": 121,
+    "likely_genuine_event": 48
+  },
+  "fault_type_distribution": {
+    "none": 8808,
+    "drift": 48,
+    "frozen": 24,
+    "bias": 16,
+    "noise": 16,
+    "communication_failure": 16,
+    "spike": 1
+  },
+  "injected_distribution": {
+    "false": 8760,
+    "true": 169
+  },
+  "time_range": {
+    "min": "2023-01-01 00:00:00",
+    "max": "2023-12-31 21:00:00"
+  },
+  "pressure_types": [
+    "sea_level_pressure_hpa"
+  ]
+}

@@ -1,0 +1,8 @@
+scenario_type,sample_count,correct_predictions,detection_rate,predicted_class_distribution
+bias,16,8,0.5,"{'Genuine Weather': 8, 'Sensor Fault': 8}"
+communication_failure,16,0,0.0,{'Genuine Weather': 16}
+drift,48,1,0.020833333333333332,"{'Genuine Weather': 47, 'Sensor Fault': 1}"
+frozen,24,24,1.0,{'Sensor Fault': 24}
+genuine_regional_event,48,0,0.0,{'Genuine Weather': 48}
+noise,16,2,0.125,"{'Genuine Weather': 14, 'Sensor Fault': 2}"
+spike,1,1,1.0,{'Sensor Fault': 1}

@@ -1,0 +1,29 @@
+{
+  "accuracy": 0.9961948249619482,
+  "macro_f1": 0.49904689287075865,
+  "weighted_f1": 0.9980937857415172,
+  "per_class": {
+    "Genuine Weather": {
+      "precision": 1.0,
+      "recall": 0.9961948249619482,
+      "f1": 0.9980937857415173,
+      "support": 1314
+    },
+    "Uncertain": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    }
+  },
+  "confusion_matrix": {
+    "Genuine Weather": {
+      "Genuine Weather": 1309,
+      "Uncertain": 5
+    },
+    "Uncertain": {
+      "Genuine Weather": 0,
+      "Uncertain": 0
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "XGBoost": {
+    "accuracy": 0.9992389649923896,
+    "macro_f1": 0.3332064458825022,
+    "weighted_f1": 0.9996193376475065,
+    "per_class": {
+      "Genuine Weather": {
+        "precision": 1.0,
+        "recall": 0.9992389649923896,
+        "f1": 0.9996193376475067,
+        "support": 1314
+      },
+      "Uncertain": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      },
+      "Sensor Fault": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      }
+    },
+    "confusion_matrix": {
+      "Genuine Weather": {
+        "Genuine Weather": 1313,
+        "Uncertain": 0,
+        "Sensor Fault": 1
+      },
+      "Uncertain": {
+        "Genuine Weather": 0,
+        "Uncertain": 0,
+        "Sensor Fault": 0
+      },
+      "Sensor Fault": {
+        "Genuine Weather": 0,
+        "Uncertain": 0,
+        "Sensor Fault": 0
+      }
+    }
+  },
+  "RandomForest_Baseline": {
+    "accuracy": 1.0,
+    "macro_f1": 0.3333333333333333,
+    "weighted_f1": 1.0,
+    "per_class": {
+      "Genuine Weather": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 1314
+      },
+      "Uncertain": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      },
+      "Sensor Fault": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0
+      }
+    },
+    "confusion_matrix": {
+      "Genuine Weather": {
+        "Genuine Weather": 1314,
+        "Uncertain": 0,
+        "Sensor Fault": 0
+      },
+      "Uncertain": {
+        "Genuine Weather": 0,
+        "Uncertain": 0,
+        "Sensor Fault": 0
+      },
+      "Sensor Fault": {
+        "Genuine Weather": 0,
+        "Uncertain": 0,
+        "Sensor Fault": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,69 @@
+[
+  {
+    "Experiment": "A. Full 11D Evidence Vector",
+    "Removed_Features": [],
+    "Historical_Macro_F1": 0.3332064458825022,
+    "Historical_Weighted_F1": 0.9996193376475065,
+    "Scenario_Macro_F1": 0.15286624203821655,
+    "Scenario_Weighted_F1": 0.3283458334903705,
+    "Scenario_Fault_Recall": 0.2975206611570248,
+    "Scenario_Uncertain_Recall": 0.0
+  },
+  {
+    "Experiment": "B. Without spatial evidence",
+    "Removed_Features": [
+      "S_spatial",
+      "C_spatial"
+    ],
+    "Historical_Macro_F1": 0.3332064458825022,
+    "Historical_Weighted_F1": 0.9996193376475065,
+    "Scenario_Macro_F1": 0.1324503311258278,
+    "Scenario_Weighted_F1": 0.28449390650103845,
+    "Scenario_Fault_Recall": 0.24793388429752067,
+    "Scenario_Uncertain_Recall": 0.0
+  },
+  {
+    "Experiment": "C. Without temporal evidence",
+    "Removed_Features": [
+      "S_temporal",
+      "S_change",
+      "C_temporal",
+      "S_seasonal",
+      "S_history",
+      "P_persistence"
+    ],
+    "Historical_Macro_F1": 0.3332064458825022,
+    "Historical_Weighted_F1": 0.9996193376475065,
+    "Scenario_Macro_F1": 0.16872427983539096,
+    "Scenario_Weighted_F1": 0.36240777266418295,
+    "Scenario_Fault_Recall": 0.33884297520661155,
+    "Scenario_Uncertain_Recall": 0.0
+  },
+  {
+    "Experiment": "D. Without multivariate evidence",
+    "Removed_Features": [
+      "S_multivariate",
+      "C_multivariate"
+    ],
+    "Historical_Macro_F1": 0.3333333333333333,
+    "Historical_Weighted_F1": 1.0,
+    "Scenario_Macro_F1": 0.10256410256410257,
+    "Scenario_Weighted_F1": 0.2203004096495221,
+    "Scenario_Fault_Recall": 0.18181818181818182,
+    "Scenario_Uncertain_Recall": 0.0
+  },
+  {
+    "Experiment": "E. Without coherence evidence",
+    "Removed_Features": [
+      "C_spatial",
+      "C_temporal",
+      "C_multivariate"
+    ],
+    "Historical_Macro_F1": 0.3332064458825022,
+    "Historical_Weighted_F1": 0.9996193376475065,
+    "Scenario_Macro_F1": 0.17177914110429449,
+    "Scenario_Weighted_F1": 0.3689693977565615,
+    "Scenario_Fault_Recall": 0.34710743801652894,
+    "Scenario_Uncertain_Recall": 0.0
+  }
+]

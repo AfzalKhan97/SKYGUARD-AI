@@ -1,0 +1,6 @@
+station_id,station_name,rows,temperature_coverage_pct,relative_humidity_coverage_pct,sea_level_pressure_coverage_pct,station_level_pressure_coverage_pct,status,reason
+INM00042111,DEHRADUN,2792,99.89,99.82,99.82,99.57,KEEP,T + RH + sea-level pressure all have usable coverage; retained for the 3-station spatial network.
+INI0000VIJP,JAIPUR,17327,99.98,99.97,16.49,0.01,REJECT,Insufficient sea-level pressure coverage for a stable network baseline.
+INM00043296,BANGALORE/HINDUSTAN AIRPORT,12727,99.99,99.97,0.0,0.0,REJECT,Insufficient sea-level pressure coverage for a stable network baseline.
+INI0000VIDD,SAFDARJUNG,2893,99.97,99.93,98.82,0.07,KEEP,T + RH + sea-level pressure all have usable coverage; retained for the 3-station spatial network.
+INI0000VIJO,JODHPUR,3445,100.0,99.91,83.8,0.7,KEEP,T + RH + sea-level pressure all have usable coverage; retained for the 3-station spatial network.

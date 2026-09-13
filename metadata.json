@@ -1,0 +1,6 @@
+{
+  "name": "SkyGuard AI",
+  "description": "Intelligent Automatic Weather Station (AWS) data quality monitoring and real-time anomaly detection system for Smart India Hackathon.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

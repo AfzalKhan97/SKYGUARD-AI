@@ -1,0 +1,6 @@
+Experiment,Removed_Features,Historical_Macro_F1,Historical_Weighted_F1,Scenario_Macro_F1,Scenario_Weighted_F1,Scenario_Fault_Recall,Scenario_Uncertain_Recall
+A. Full 11D Evidence Vector,[],0.3332064458825022,0.9996193376475065,0.15286624203821655,0.3283458334903705,0.2975206611570248,0.0
+B. Without spatial evidence,"['S_spatial', 'C_spatial']",0.3332064458825022,0.9996193376475065,0.1324503311258278,0.28449390650103845,0.24793388429752067,0.0
+C. Without temporal evidence,"['S_temporal', 'S_change', 'C_temporal', 'S_seasonal', 'S_history', 'P_persistence']",0.3332064458825022,0.9996193376475065,0.16872427983539096,0.36240777266418295,0.33884297520661155,0.0
+D. Without multivariate evidence,"['S_multivariate', 'C_multivariate']",0.3333333333333333,1.0,0.10256410256410257,0.2203004096495221,0.18181818181818182,0.0
+E. Without coherence evidence,"['C_spatial', 'C_temporal', 'C_multivariate']",0.3332064458825022,0.9996193376475065,0.17177914110429449,0.3689693977565615,0.34710743801652894,0.0

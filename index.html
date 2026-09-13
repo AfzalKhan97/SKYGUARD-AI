@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          var _fetch = typeof window !== 'undefined' && window.fetch ? window.fetch.bind(window) : undefined;
+          Object.defineProperty(window, 'fetch', {
+            configurable: true,
+            enumerable: true,
+            get: function() {
+              return _fetch;
+            },
+            set: function(fn) {
+              _fetch = fn;
+            }
+          });
+        } catch (e) {
+          try {
+            var proto = typeof window !== 'undefined' ? Object.getPrototypeOf(window) : null;
+            if (proto) {
+              var _protoFetch = proto.fetch ? proto.fetch.bind(window) : undefined;
+              Object.defineProperty(proto, 'fetch', {
+                configurable: true,
+                enumerable: true,
+                get: function() {
+                  return _protoFetch;
+                },
+                set: function(fn) {
+                  _protoFetch = fn;
+                }
+              });
+            }
+          } catch (e2) {}
+        }
+      })();
+    </script>
+    <title>SkyGuard AI — AWS Data Quality & Anomaly Monitoring</title>
+    <meta name="description" content="Intelligent Automatic Weather Station (AWS) data quality monitoring and real-time anomaly detection system for Smart India Hackathon." />
+    <meta property="og:title" content="SkyGuard AI — AWS Data Quality & Anomaly Monitoring" />
+    <meta property="og:description" content="Intelligent Automatic Weather Station (AWS) data quality monitoring and real-time anomaly detection system for Smart India Hackathon." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

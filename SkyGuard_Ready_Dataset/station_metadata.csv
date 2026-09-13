@@ -1,0 +1,4 @@
+station_id,station_name,latitude,longitude,elevation_m,pressure_field_used,pressure_note
+INI0000VIDD,SAFDARJUNG,28.5845,77.2058,214.9,sea_level_pressure_hpa,Common pressure field across the retained stations.
+INI0000VIJO,JODHPUR,26.2511,73.0489,218.5,sea_level_pressure_hpa,Common pressure field across the retained stations.
+INM00042111,DEHRADUN,30.3167,78.0333,682.0,sea_level_pressure_hpa,Common pressure field across the retained stations.

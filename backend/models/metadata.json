@@ -1,0 +1,23 @@
+{
+  "training_timestamp": "2026-09-12 23:21:20.572709",
+  "features": [
+    "S_temporal",
+    "S_seasonal",
+    "S_change",
+    "S_multivariate",
+    "S_spatial",
+    "S_history",
+    "S_physics",
+    "C_spatial",
+    "C_temporal",
+    "C_multivariate",
+    "P_persistence"
+  ],
+  "classes": {
+    "0": "Genuine Weather",
+    "1": "Uncertain",
+    "2": "Sensor Fault"
+  },
+  "xgboost_historical_accuracy": 0.9992389649923896,
+  "random_forest_historical_accuracy": 1.0
+}

@@ -92,37 +92,37 @@ export const ControlledAnomalyModal: React.FC = () => {
       if (selectedAnomalyType === 'spike') {
         return {
           title: '🔴 Temperature Spike Detected',
-          confidence: 90,
+          confidence: 'Pending Analysis',
           likelyCause: 'Sudden sensor spike / hardware fault',
           causeDetail: 'Physical step rate-of-change (+22.6°C) exceeds maximum allowable atmospheric gradient (+6.0°C/hr).',
-          badge: 'Critical Fault',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       } else if (selectedAnomalyType === 'drop') {
         return {
           title: '🔴 Temperature Plunge Fault Detected',
-          confidence: 93,
+          confidence: 'Pending Analysis',
           likelyCause: 'Sudden sensor drop / probe ground fault',
           causeDetail: 'Instantaneous temperature plunge uncorroborated by regional cold pool dynamics.',
-          badge: 'Critical Fault',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       } else if (selectedAnomalyType === 'drift') {
         return {
           title: '🟡 Temperature Sensor Drift Detected',
-          confidence: 88,
+          confidence: 'Pending Analysis',
           likelyCause: 'Sensor calibration drift / radiation shield degradation',
           causeDetail: 'Expanding positive thermal bias detected across consecutive diurnal cycles relative to cluster.',
-          badge: 'Attention / Watch',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
         };
       } else {
         return {
           title: '🔴 Telemetry Missing / Packet Dropout',
-          confidence: 98,
+          confidence: 'Pending Analysis',
           likelyCause: 'Communication failure / packet dropout / power loss',
           causeDetail: 'Scheduled DCP 3-hour transmission window timed out with 0 bytes received from sensor ADC.',
-          badge: 'Critical Outage',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       }
@@ -130,37 +130,37 @@ export const ControlledAnomalyModal: React.FC = () => {
       if (selectedAnomalyType === 'spike') {
         return {
           title: '🔴 Humidity Spike Fault Detected',
-          confidence: 91,
+          confidence: 'Pending Analysis',
           likelyCause: 'Capacitive polymer condensation lock-up / short circuit',
           causeDetail: 'Instantaneous RH jump to near 100% with zero precipitation and clear skies across neighboring stations.',
-          badge: 'Critical Fault',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       } else if (selectedAnomalyType === 'drop') {
         return {
           title: '🔴 Humidity Dropout Fault Detected',
-          confidence: 89,
+          confidence: 'Pending Analysis',
           likelyCause: 'Hygrometer open-circuit / transducer dislocation',
           causeDetail: 'Extreme unphysical dry-air dropout violating psychrometric vapor pressure constraints.',
-          badge: 'Critical Fault',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       } else if (selectedAnomalyType === 'drift') {
         return {
           title: '🟡 Humidity Sensor Drift Detected',
-          confidence: 86,
+          confidence: 'Pending Analysis',
           likelyCause: 'Hygrometer polymer aging / recalibration required',
           causeDetail: 'Systematic humidity upward bias persisting during daytime solar minimum RH window.',
-          badge: 'Attention / Watch',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
         };
       } else {
         return {
           title: '🔴 Humidity Telemetry Missing',
-          confidence: 98,
+          confidence: 'Pending Analysis',
           likelyCause: 'Hygrometer channel communication timeout',
           causeDetail: 'Missing telemetry packet on relative humidity sensor channel.',
-          badge: 'Critical Outage',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       }
@@ -168,37 +168,37 @@ export const ControlledAnomalyModal: React.FC = () => {
       if (selectedAnomalyType === 'spike') {
         return {
           title: '🔴 Pressure Spike Fault Detected',
-          confidence: 94,
+          confidence: 'Pending Analysis',
           likelyCause: 'Piezoresistive pressure transducer overload / reference port blocked',
           causeDetail: 'Barometric jump exceeds highest recorded atmospheric pressure differential.',
-          badge: 'Critical Fault',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       } else if (selectedAnomalyType === 'drop') {
         return {
           title: '🔴 Pressure Plunge Fault Detected',
-          confidence: 96,
+          confidence: 'Pending Analysis',
           likelyCause: 'Barometer diaphragm leakage / ADC reference fault',
           causeDetail: 'Pressure reading would correspond to Category 5 cyclone eye, physically implausible.',
-          badge: 'Critical Fault',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       } else if (selectedAnomalyType === 'drift') {
         return {
           title: '🟡 Barometric Pressure Drift Detected',
-          confidence: 87,
+          confidence: 'Pending Analysis',
           likelyCause: 'Barometric transducer zero-point drift',
           causeDetail: 'Systematic offset from hydrostatic pressure equilibrium and regional tendencies.',
-          badge: 'Attention / Watch',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-amber-100 text-amber-800 border-amber-200',
         };
       } else {
         return {
           title: '🔴 Barometer Telemetry Missing',
-          confidence: 98,
+          confidence: 'Pending Analysis',
           likelyCause: 'Barometer serial bus bus-off / timeout',
           causeDetail: 'Null reading received on pressure transducer telemetry port.',
-          badge: 'Critical Outage',
+          badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
       }
@@ -215,6 +215,7 @@ export const ControlledAnomalyModal: React.FC = () => {
       anomalyType: selectedAnomalyType,
       customInjectedValue: valToSend,
     });
+    setIsControlledSimModalOpen(false);
   };
 
   return (
@@ -444,7 +445,7 @@ export const ControlledAnomalyModal: React.FC = () => {
                   <span className="font-bold text-white">{preview.title}</span>
                 </div>
                 <div className="flex items-center gap-2 font-mono text-[11px]">
-                  <span>AI Confidence: <strong className="text-emerald-400">{preview.confidence}%</strong></span>
+                  <span>AI Confidence: <strong className="text-emerald-400">{preview.confidence}</strong></span>
                   <span>•</span>
                   <span>Expected: <strong className="text-blue-300">{currentReadingFormatted}</strong></span>
                 </div>

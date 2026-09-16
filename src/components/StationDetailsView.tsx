@@ -20,7 +20,8 @@ import {
   Zap,
   TrendingDown,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  ArrowRight
 } from 'lucide-react';
 import { useStation } from '../context/StationContext';
 import { TrendChart } from './TrendChart';

@@ -225,7 +225,7 @@ function generateGhcnhSequence(
         estimatedRH = baseRH;
         estimatedP = baseP;
         anomalyTypeLabel = 'Communication Failure (Packet Drop)';
-        flagNote = 'Null payload packet / DCP telemetry buffer timeout across 3-hour scheduled window';
+        flagNote = 'Null payload packet / telemetry buffer timeout across 3-hour scheduled window';
         evVector = createEvidenceVector({
           temporal: 0.90,
           seasonal: 0.10,
@@ -336,8 +336,8 @@ export const GHCNH_STATIONS: Station[] = [
     nearbyStationIds: ['INI0000VIJO', 'INM00042111', 'AWS-NCR-01'],
     
     installedDate: '2021-01-15',
-    sensorModel: 'Vaisala HMP155 / PT100 Class A (GHCNh Verified)',
-    transmissionType: 'GPRS',
+    sensorModel: 'Vaisala HMP155',
+    transmissionType: 'Cellular',
     missingRatePct: 2.83,
     duplicateTimestampsCount: 56,
     isPrimaryGhcnhStation: true,
@@ -388,8 +388,8 @@ export const GHCNH_STATIONS: Station[] = [
     nearbyStationIds: ['INI0000VIDD', 'AWS-RAJ-02'],
     
     installedDate: '2020-08-10',
-    sensorModel: 'Rotronic HC2A-S3 High Precision / PT100',
-    transmissionType: 'INSAT / Satellite',
+    sensorModel: 'Rotronic HC2A-S3 High Precision',
+    transmissionType: 'Cellular',
     missingRatePct: 2.83,
     duplicateTimestampsCount: 62,
     isPrimaryGhcnhStation: true,
@@ -474,7 +474,7 @@ export const GHCNH_STATIONS: Station[] = [
     nearbyStationIds: ['INI0000VIDD'],
     installedDate: '2022-11-01',
     sensorModel: 'Vaisala AWS310 Reference Grade',
-    transmissionType: 'GPRS',
+    transmissionType: 'Cellular',
     missingRatePct: 1.80,
     duplicateTimestampsCount: 12,
     isPrimaryGhcnhStation: false,
@@ -507,7 +507,7 @@ export const GHCNH_STATIONS: Station[] = [
     nearbyStationIds: ['INI0000VIJO', 'INI0000VIDD'],
     installedDate: '2021-06-12',
     sensorModel: 'Kintech EOL Zenith AWS',
-    transmissionType: 'INSAT / Satellite',
+    transmissionType: 'Cellular',
     missingRatePct: 2.10,
     duplicateTimestampsCount: 15,
     isPrimaryGhcnhStation: false,
@@ -539,8 +539,8 @@ export const GHCNH_STATIONS: Station[] = [
     history: generateGhcnhSequence('AWS-UTK-01', '2023-08-28', 28.5, 82.0, 994.0),
     nearbyStationIds: ['INM00042111', 'INI0000VIDD'],
     installedDate: '2022-09-20',
-    sensorModel: 'Vaisala HMP155 / PT100',
-    transmissionType: 'GPRS',
+    sensorModel: 'Vaisala HMP155',
+    transmissionType: 'Cellular',
     missingRatePct: 2.40,
     duplicateTimestampsCount: 18,
     isPrimaryGhcnhStation: false,
@@ -605,7 +605,7 @@ export const GHCNH_SCENARIOS: ScenarioDefinition[] = [
   {
     id: 'frozen-sensor',
     name: 'Frozen / Stuck Sensor',
-    description: 'Zero variance barometric signal with invariant ADC output over 18 consecutive hours.',
+    description: 'Zero variance barometric signal with invariant output over 18 consecutive hours.',
     category: 'fault',
     targetStationId: 'INM00042111',
     targetStationName: 'Dehradun',

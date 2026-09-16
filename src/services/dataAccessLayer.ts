@@ -140,221 +140,138 @@ export class DataAccessLayer {
    * Simulates/Switches controlled demonstration scenarios
    * Clearly distinguishes simulated/injected scenarios vs real GHCNh observations
    */
-  public static simulateScenario(scenario: SimulationScenario): {
+  public static async simulateScenario(scenario: SimulationScenario): Promise<{
     stations: Station[];
     anomalies: AnomalyRecord[];
     targetStationId: string;
-  } {
+  }> {
     // Reset to base state
     this.stations = JSON.parse(JSON.stringify(GHCNH_STATIONS));
     this.anomalies = JSON.parse(JSON.stringify(GHCNH_ANOMALIES));
 
     let targetStationId = 'INI0000VIDD';
+    let targetStationIndex = this.stations.findIndex(s => s.id === targetStationId);
+    let injectedNumericVal: number | null = null;
+    let parameter: string = 'temperature';
+    let scenarioType: string = 'normal';
 
     if (scenario === 'NORMAL') {
       targetStationId = 'INM00042111'; // Dehradun baseline
-      this.stations = this.stations.map(st => {
-        if (st.id === 'INI0000VIDD') {
-          return {
-            ...st,
-            status: 'healthy',
-            overallHealthScore: 98,
-            currentReadings: { temperature: 32.4, humidity: 61.0, pressure: 997.8 },
-            sensorHealth: { temperature: 98, humidity: 98, pressure: 97 },
-            sensorTrust: { trust_score: 97.5, trend: 'stable', maintenance_status: 'normal' },
-            degradation: { degradation_risk: 0.05, status: 'normal', reason: [] },
-            activeAnomalyId: undefined,
-          };
-        }
-        if (st.id === 'INI0000VIJO') {
-          return {
-            ...st,
-            status: 'healthy',
-            overallHealthScore: 96,
-            currentReadings: { temperature: 33.8, humidity: 34.0, pressure: 995.2 },
-            sensorHealth: { temperature: 96, humidity: 95, pressure: 97 },
-            sensorTrust: { trust_score: 95.0, trend: 'stable', maintenance_status: 'normal' },
-            degradation: { degradation_risk: 0.08, status: 'normal', reason: [] },
-            activeAnomalyId: undefined,
-          };
-        }
-        return st;
-      });
+      // Reset is sufficient, just return base state
+      return {
+        stations: this.stations,
+        anomalies: this.anomalies,
+        targetStationId
+      };
     } else if (scenario === 'TEMPERATURE_SPIKE') {
       targetStationId = 'INI0000VIDD';
-      // Injected spike on Delhi Safdarjung
+      targetStationIndex = this.stations.findIndex(s => s.id === targetStationId);
+      injectedNumericVal = 55.0; // Injected spike on Delhi Safdarjung
+      parameter = 'temperature';
+      scenarioType = 'spike';
     } else if (scenario === 'SENSOR_DRIFT') {
       targetStationId = 'INI0000VIJO';
-      // Drift on Jodhpur
+      targetStationIndex = this.stations.findIndex(s => s.id === targetStationId);
+      injectedNumericVal = 38.6; // Drift on Jodhpur
+      parameter = 'temperature';
+      scenarioType = 'drift';
     } else if (scenario === 'FROZEN_SENSOR') {
       targetStationId = 'INM00042111';
-      this.stations = this.stations.map(st => {
-        if (st.id === 'INM00042111') {
-          return {
-            ...st,
-            status: 'attention',
-            overallHealthScore: 71,
-            sensorHealth: { temperature: 65, humidity: 97, pressure: 98 },
-            sensorTrust: { trust_score: 68.0, trend: 'declining', maintenance_status: 'watch' },
-            degradation: {
-              degradation_risk: 0.52,
-              status: 'watch',
-              reason: ['frozen_sensor_evidence', 'zero_signal_variance'],
-            },
-            currentReadings: { temperature: 24.2, humidity: 88.0, pressure: 938.4 },
-            activeAnomalyId: 'ANOM-GHCNH-DEH-04',
-          };
-        }
-        return st;
-      });
-
-      // Add frozen anomaly
-      const frozenAnomaly: AnomalyRecord = {
-        id: 'ANOM-GHCNH-DEH-04',
-        stationId: 'INM00042111',
-        stationName: 'Dehradun',
-        state: 'Uttarakhand',
-        timestamp: '2023-08-28T14:30:00Z',
-        parameter: 'temperature',
-        classification: 'sensor_fault',
-        probabilities: { genuine_weather: 0.05, uncertain: 0.09, sensor_fault: 0.86 },
-        rootCause: 'frozen',
-        anomalyType: 'Frozen / Stuck Transducer',
-        severity: 'warning',
-        confidence: 94,
-        status: 'Active',
-        observedValue: 24.2,
-        estimatedValue: 26.8,
-        unit: '°C',
-        is_injected: true,
-        scenario_type: 'frozen',
-        evidenceVector: createEvidenceVector({
-          temporal: 0.72,
-          seasonal: 0.55,
-          change: 0.01,
-          multivariate: 0.65,
-          spatial: 0.71,
-          history: 0.60,
-          persistence: 0.90,
-        }),
-        evidence: [
-          {
-            indicator: 'Zero Signal Variance (σ²=0)',
-            dimension: 'persistence',
-            score: 'HIGH',
-            value: 0.90,
-            detail: 'Temperature reading static at exactly 24.20°C across 3 consecutive 3-hour sample cycles',
-            benchmark: 'σ² = 0.000',
-          },
-          {
-            indicator: 'Diurnal Solar Forcing Mismatch',
-            dimension: 'seasonal',
-            score: 'HIGH',
-            value: 0.55,
-            detail: 'Ambient solar irradiance changed +290 W/m² without corresponding thermal response',
-            benchmark: 'ΔSolar: +290 W/m²',
-          },
-        ],
-        shapContributions: [
-          {
-            feature: 'persistence',
-            label: 'Static Output Persistence (0.90)',
-            shapValue: 0.45,
-            impact: 'increases_fault_risk',
-            description: 'Repeated static reading without micro-fluctuation contributed +45% to fault diagnosis.',
-          },
-        ],
-        correction: {
-          raw_value: { temperature_c: 24.2, humidity_pct: 88.0, pressure_hpa: 938.4 },
-          corrected_value: { temperature_c: 26.8, humidity_pct: 88.0, pressure_hpa: 938.4 },
-          correction_confidence: 0.92,
-          correction_method: 'temporal_spatial_estimate',
-          raw_preserved: true,
-        },
-        explanation: 'Temperature transducer ADC locked at a static output value across diurnal peak.',
-        recommendedAction: 'Initiate remote transducer soft-reset; if lock persists, dispatch field team for probe bridge replacement.',
-      };
-
-      this.anomalies.push(frozenAnomaly);
+      targetStationIndex = this.stations.findIndex(s => s.id === targetStationId);
+      injectedNumericVal = 938.4;
+      parameter = 'pressure';
+      scenarioType = 'frozen';
     } else if (scenario === 'MISSING_DATA') {
       targetStationId = 'INI0000VIDD';
-      this.stations = this.stations.map(st => {
-        if (st.id === 'INI0000VIDD') {
-          return {
-            ...st,
-            status: 'critical',
-            overallHealthScore: 28,
-            sensorHealth: { temperature: 25, humidity: 25, pressure: 25 },
-            sensorTrust: { trust_score: 35.0, trend: 'declining', maintenance_status: 'investigate' },
-            degradation: {
-              degradation_risk: 0.85,
-              status: 'maintenance_recommended',
-              reason: ['telemetry_timeout', 'packet_loss_100pct', 'battery_undervoltage'],
-            },
-            currentReadings: { temperature: null, humidity: null, pressure: null },
-            activeAnomalyId: 'ANOM-GHCNH-VIDD-05',
-          };
-        }
-        return st;
-      });
-
-      const missingAnomaly: AnomalyRecord = {
-        id: 'ANOM-GHCNH-VIDD-05',
-        stationId: 'INI0000VIDD',
-        stationName: 'Delhi (Safdarjung)',
-        state: 'Delhi NCR',
-        timestamp: '2023-08-28T14:30:00Z',
-        parameter: 'communication',
-        classification: 'sensor_fault',
-        probabilities: { genuine_weather: 0.01, uncertain: 0.04, sensor_fault: 0.95 },
-        rootCause: 'communication_failure',
-        anomalyType: 'Communication Failure (Packet Drop)',
-        severity: 'critical',
-        confidence: 98,
-        status: 'Active',
-        observedValue: 'NULL / Dropout',
-        estimatedValue: 32.4,
-        unit: '°C',
-        is_injected: true,
-        scenario_type: 'communication_failure',
-        evidenceVector: createEvidenceVector({
-          temporal: 0.90,
-          history: 0.75,
-          persistence: 0.70,
-        }),
-        evidence: [
-          {
-            indicator: 'Payload Transmission Dropout',
-            dimension: 'history',
-            score: 'HIGH',
-            value: 0.75,
-            detail: 'Zero bytes received in scheduled transmission window for all channels',
-            benchmark: 'Packet Loss: 100%',
-          },
-        ],
-        shapContributions: [
-          {
-            feature: 'temporal',
-            label: 'Consecutive Missing Telemetry Packets',
-            shapValue: 0.55,
-            impact: 'increases_fault_risk',
-            description: 'Missing scheduled DCP packet triggered immediate communication failure alert.',
-          },
-        ],
-        correction: {
-          raw_value: { temperature_c: null, humidity_pct: null, pressure_hpa: null },
-          corrected_value: { temperature_c: 32.4, humidity_pct: 61.0, pressure_hpa: 997.8 },
-          correction_confidence: 0.85,
-          correction_method: 'temporal_spatial_estimate',
-          raw_preserved: true,
-        },
-        explanation: 'Telemetry dropout detected. Data Collection Platform (DCP) remote logger unreachable due to power interruption.',
-        recommendedAction: 'Check remote DCP battery voltage; inspect 12V solar backup charge controller.',
-      };
-
-      this.anomalies.push(missingAnomaly);
+      targetStationIndex = this.stations.findIndex(s => s.id === targetStationId);
+      injectedNumericVal = null;
+      parameter = 'communication';
+      scenarioType = 'communication_failure';
     } else if (scenario === 'GENUINE_WEATHER_EVENT') {
       targetStationId = 'INI0000VIDD';
+      targetStationIndex = this.stations.findIndex(s => s.id === targetStationId);
+      injectedNumericVal = 22.8;
+      parameter = 'temperature';
+      scenarioType = 'genuine';
+    }
+
+    const targetStation = this.stations[targetStationIndex];
+    if (!targetStation) {
+       return { stations: this.stations, anomalies: this.anomalies, targetStationId };
+    }
+
+    const currentT = targetStation.currentReadings.temperature ?? 32.4;
+    const currentRH = targetStation.currentReadings.humidity ?? 61.0;
+    const currentP = targetStation.currentReadings.pressure ?? 997.8;
+
+    const newReading = {
+      temperature: parameter === 'temperature' ? injectedNumericVal : currentT,
+      humidity: parameter === 'humidity' ? injectedNumericVal : (parameter === 'communication' ? null : currentRH),
+      pressure: parameter === 'pressure' ? injectedNumericVal : (parameter === 'communication' ? null : currentP),
+    };
+
+    // CALL REAL ML API
+    const analysis = await analyzeStationData(targetStation, this.stations, newReading, targetStation.history || []);
+    
+    const newAnomalyId = `ANM-${Math.floor(Math.random() * 100000).toString().padStart(5, '0')}`;
+
+    const updatedHistory = targetStation.history ? [...targetStation.history] : [];
+    if (updatedHistory.length > 0) {
+      const lastIdx = updatedHistory.length - 1;
+      const lastPoint = updatedHistory[lastIdx];
+      updatedHistory[lastIdx] = {
+        ...lastPoint,
+        temperature: newReading.temperature,
+        humidity: newReading.humidity,
+        pressure: newReading.pressure,
+        isAnomaly: analysis.anomalyDetected,
+        classification: analysis.classification,
+        faultType: analysis.rootCause,
+        anomalyType: analysis.anomalyType,
+        is_injected: true,
+        scenario_type: scenarioType,
+        evidenceVector: analysis.evidenceVector,
+      };
+    }
+
+    this.stations[targetStationIndex] = {
+      ...targetStation,
+      status: analysis.anomalyDetected ? (analysis.severity === 'critical' ? 'critical' : 'attention') : 'healthy',
+      currentReadings: newReading,
+      sensorTrust: analysis.sensorTrust || targetStation.sensorTrust,
+      degradation: analysis.degradation || targetStation.degradation,
+      history: updatedHistory,
+      activeAnomalyId: analysis.anomalyDetected ? newAnomalyId : undefined,
+    };
+
+    if (analysis.anomalyDetected) {
+      const newAnomalyRecord: AnomalyRecord = {
+        id: newAnomalyId,
+        stationId: targetStationId,
+        stationName: targetStation.name,
+        state: targetStation.state,
+        timestamp: 'Just now (Live Injection)',
+        parameter: parameter as any,
+        classification: analysis.classification,
+        probabilities: analysis.probabilities,
+        rootCause: analysis.rootCause,
+        anomalyType: analysis.anomalyType || 'Anomaly Detected',
+        severity: analysis.severity,
+        confidence: analysis.confidence,
+        status: 'Active',
+        observedValue: injectedNumericVal !== null ? String(injectedNumericVal) : 'NULL',
+        estimatedValue: newReading.temperature || 0,
+        unit: parameter === 'temperature' ? '°C' : (parameter === 'pressure' ? 'hPa' : (parameter === 'humidity' ? '%' : '')),
+        evidenceVector: analysis.evidenceVector,
+        evidence: analysis.evidence || [],
+        shapContributions: analysis.shapContributions || [],
+        correction: analysis.correction,
+        explanation: analysis.explanation,
+        recommendedAction: analysis.recommendedAction,
+        is_injected: true,
+        scenario_type: scenarioType
+      };
+      this.anomalies = [newAnomalyRecord, ...this.anomalies];
     }
 
     return {

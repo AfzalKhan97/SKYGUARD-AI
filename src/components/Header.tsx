@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Radio, 
-  Search, 
-  Bell, 
-  User, 
-  Menu, 
-  X, 
-  ShieldCheck, 
-  Activity, 
+import {
+  Radio,
+  Search,
+  Bell,
+  User,
+  Menu,
+  X,
+  ShieldCheck,
+  Activity,
   LogOut,
   ChevronDown,
   Clock,
@@ -27,11 +27,11 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenuOpen }) => {
-  const { 
-    currentUser, 
-    logout, 
-    counts, 
-    isLiveUpdating, 
+  const {
+    currentUser,
+    logout,
+    counts,
+    isLiveUpdating,
     toggleLiveUpdating,
     searchQuery,
     setSearchQuery,
@@ -76,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenu
     return () => clearInterval(interval);
   }, []);
 
-  const searchResults = searchQuery.trim() === '' ? [] : stations.filter(s => 
+  const searchResults = searchQuery.trim() === '' ? [] : stations.filter(s =>
     s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
     s.state.toLowerCase().includes(searchQuery.toLowerCase())
@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenu
       <header className="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            
+
             {/* Left: Branding & Mobile Toggle */}
             <div className="flex items-center gap-3">
               <button
@@ -99,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenu
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
 
-              <div 
+              <div
                 className="flex items-center gap-2.5 cursor-pointer"
                 onClick={() => setCurrentTab('dashboard')}
               >
@@ -109,9 +109,6 @@ export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenu
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-slate-900 text-lg tracking-tight">SkyGuard AI</span>
-                    <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
-                      SIH26073
-                    </span>
                   </div>
                   <p className="text-xs text-slate-500 hidden sm:block">AWS Data Quality & Anomaly Monitoring</p>
                 </div>
@@ -135,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenu
                   className="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-600 focus:border-blue-600 transition"
                 />
                 {searchQuery && (
-                  <button 
+                  <button
                     onClick={() => setSearchQuery('')}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
                   >
@@ -162,10 +159,9 @@ export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenu
                         <span className="font-semibold text-slate-900">{station.name}</span>
                         <span className="text-slate-500 ml-1.5 text-[11px]">({station.id} • {station.state})</span>
                       </div>
-                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded capitalize ${
-                        station.status === 'healthy' ? 'bg-emerald-50 text-emerald-700' :
+                      <span className={`text-[10px] font-medium px-2 py-0.5 rounded capitalize ${station.status === 'healthy' ? 'bg-emerald-50 text-emerald-700' :
                         station.status === 'attention' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'
-                      }`}>
+                        }`}>
                         {station.status}
                       </span>
                     </div>
@@ -176,7 +172,7 @@ export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenu
 
             {/* Right: Telemetry status, Clock, Alerts & User Profile */}
             <div className="flex items-center gap-3 sm:gap-4">
-              
+
               {/* Live Stream Toggle Indicator */}
               <button
                 id="live-stream-toggle-btn"

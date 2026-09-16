@@ -51,7 +51,7 @@ export const ReportsView: React.FC = () => {
           <div>
             <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
               <FileText className="w-5 h-5 text-blue-800" />
-              <span>SKYGUARD AI | Meteorological Data Quality & Sensor Analysis Report</span>
+              <span>SKYGUARD AI | Meteorological Data Quality & Data Trust Report</span>
             </h1>
             <p className="text-xs text-slate-500 mt-1">
               Data Quality and Evaluation Metrics Summary
@@ -131,15 +131,15 @@ export const ReportsView: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-blue-900 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                  IMD / SKYGUARD AI QUALITY ASSURANCE REPORT
+                  SKYGUARD AI QUALITY ASSURANCE REPORT
                 </span>
                 <span className="text-[10px] font-mono text-slate-400">DOC-REF: SG-{currentStation.id}-2026</span>
               </div>
               <h2 className="text-xl font-bold text-slate-900 mt-1">
-                Meteorological Data Quality & Sensor Health Audit
+                Meteorological Data Quality & Sensor Data Trust Audit
               </h2>
               <p className="text-xs text-slate-500">
-                Evaluation standard: WMO No. 8 & IMD Meteorological Sensor Quality Specifications
+                Evaluation standard: SkyGuard AI Data Quality Specifications
               </p>
             </div>
 
@@ -196,10 +196,10 @@ export const ReportsView: React.FC = () => {
             </div>
           </div>
 
-          {/* 2. Sensor Health Matrix */}
+          {/* 2. Sensor Data Trust Matrix */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3 pb-1 border-b border-slate-100">
-              2. Sensor Channel Health & Calibration Scores
+              2. Sensor Data Trust & Calibration Scores
             </h3>
 
             <div className="overflow-x-auto">
@@ -209,13 +209,13 @@ export const ReportsView: React.FC = () => {
                     <th className="py-2.5 px-3">Parameter</th>
                     <th className="py-2.5 px-3">Current Value</th>
                     <th className="py-2.5 px-3">Completeness</th>
-                    <th className="py-2.5 px-3">Health Score</th>
+                    <th className="py-2.5 px-3">Trust Score</th>
                     <th className="py-2.5 px-3">Calibration Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
                   <tr>
-                    <td className="py-2.5 px-3 font-semibold text-slate-900">Temperature (RTD / PT100)</td>
+                    <td className="py-2.5 px-3 font-semibold text-slate-900">Temperature</td>
                     <td className="py-2.5 px-3 font-mono">
                       {currentStation.currentReadings.temperature !== null ? `${currentStation.currentReadings.temperature}°C` : 'Dropout'}
                     </td>
@@ -322,7 +322,7 @@ export const ReportsView: React.FC = () => {
                 <strong>Hardware Check:</strong> Clean aspirated radiation shield slats and inspect thermistor connection terminals for oxidation.
               </li>
               <li>
-                <strong>Telemetry Verification:</strong> Test secondary satellite DCP transmitter health ping to confirm zero packet loss.
+                <strong>Telemetry Verification:</strong> Test secondary transmitter health ping to confirm zero packet loss.
               </li>
             </ul>
           </div>

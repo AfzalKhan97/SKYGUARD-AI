@@ -19,6 +19,8 @@ import { useStation } from '../context/StationContext';
 
 export const SimulationController: React.FC = () => {
   const { 
+    stations,
+    anomalies,
     currentScenario, 
     setScenario, 
     setCurrentTab, 
@@ -237,57 +239,50 @@ export const SimulationController: React.FC = () => {
 
       {/* Real-time Pipeline Flow Banner */}
       <div className={`mt-3 rounded-md p-2.5 text-xs border ${
-        activeControlledSim 
+        activeControlledSim || (stations.find(s => s.id === active.stationId)?.status !== 'healthy')
           ? 'bg-rose-50/90 border-rose-300 text-rose-950' 
           : 'bg-slate-50 border-slate-200 text-slate-600'
       }`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
           <div className="flex items-start md:items-center gap-2">
             <span className={`text-[10px] font-bold tracking-wider uppercase px-1.5 py-0.5 rounded shrink-0 ${
-              activeControlledSim ? 'bg-rose-600 text-white' : 'bg-slate-200 text-slate-700'
+              (activeControlledSim || (stations.find(s => s.id === active.stationId)?.status !== 'healthy')) ? 'bg-rose-600 text-white' : 'bg-slate-200 text-slate-700'
             }`}>
-              {activeControlledSim ? 'Simulation Pipeline Result' : 'Pipeline State'}
+              Pipeline State
             </span>
             <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-              {activeControlledSim ? (
-                <>
-                  <span className="font-bold text-rose-900">{activeControlledSim.anomalyTitle}</span>
-                  <span className="text-rose-300">•</span>
-                  <span>Station: <strong className="text-slate-900">{activeControlledSim.stationName}</strong></span>
-                  <span className="text-rose-300">•</span>
-                  <span>Observed: <strong className="text-rose-700 font-mono">{activeControlledSim.injectedValue}</strong></span>
-                  <span className="text-rose-300">•</span>
-                  <span>Expected: <strong className="text-emerald-700 font-mono">{activeControlledSim.expectedValue}</strong></span>
-                  <span className="text-rose-300">•</span>
-                  <span>AI Confidence: <strong className="text-blue-900 font-mono">{activeControlledSim.confidence}%</strong></span>
-                  <span className="text-rose-300">•</span>
-                  <span className="text-slate-800 font-medium">Likely Cause: {activeControlledSim.likelyCause}</span>
-                </>
-              ) : (
-                <>
-                  <span>Station: <strong className="text-slate-900">{active.station}</strong></span>
-                  <span className="text-slate-300">•</span>
-                  <span>Observed: <strong className="text-rose-700 font-mono">{active.observed}</strong></span>
-                  <span className="text-slate-300">•</span>
-                  <span>Corrected: <strong className="text-emerald-700 font-mono">{active.estimated}</strong></span>
-                  <span className="text-slate-300">•</span>
-                  <span className="text-slate-800 font-medium">{active.rootCause}</span>
-                </>
-              )}
+              {(() => {
+                const targetSt = stations.find(s => s.id === (activeControlledSim ? activeControlledSim.stationId : active.stationId));
+                const targetAnom = targetSt?.activeAnomalyId ? anomalies.find(a => a.id === targetSt.activeAnomalyId) : null;
+                
+                if (targetAnom) {
+                  return (
+                    <>
+                      <span className="font-bold text-rose-900">{targetAnom.anomalyType}</span>
+                      <span className="text-rose-300">•</span>
+                      <span>Station: <strong className="text-slate-900">{targetSt?.name}</strong></span>
+                      <span className="text-rose-300">•</span>
+                      <span>Observed: <strong className="text-rose-700 font-mono">{targetAnom.observedValue}</strong></span>
+                      <span className="text-rose-300">•</span>
+                      <span>Confidence: <strong className="text-blue-900 font-mono">{targetAnom.confidence}%</strong></span>
+                      <span className="text-rose-300">•</span>
+                      <span className="text-slate-800 font-medium">Likely Cause: {targetAnom.rootCause}</span>
+                    </>
+                  );
+                } else {
+                  return (
+                    <>
+                      <span>Station: <strong className="text-slate-900">{targetSt?.name || active.station}</strong></span>
+                      <span className="text-slate-300">•</span>
+                      <span>Status: <strong className="text-emerald-700 font-mono">Healthy / Genuine</strong></span>
+                    </>
+                  );
+                }
+              })()}
             </div>
           </div>
 
           <div className="flex items-center gap-2 self-end md:self-auto">
-            {activeControlledSim && (
-              <button
-                id="reset-sim-banner-btn"
-                onClick={resetControlledSimulation}
-                className="inline-flex items-center gap-1 text-[11px] font-semibold text-rose-800 hover:text-rose-950 bg-white px-2 py-0.5 rounded border border-rose-300 hover:bg-rose-50"
-              >
-                <RotateCcw className="w-3 h-3" />
-                Reset
-              </button>
-            )}
             <button
               onClick={() => {
                 setSelectedStationId(activeControlledSim ? activeControlledSim.stationId : active.stationId);
@@ -295,7 +290,7 @@ export const SimulationController: React.FC = () => {
               }}
               className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-900 hover:text-blue-950 hover:underline"
             >
-              Inspect {(activeControlledSim ? activeControlledSim.stationName : active.station).split(' ')[0]} Diagnosis
+              Inspect Diagnosis
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>

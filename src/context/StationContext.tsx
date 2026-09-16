@@ -83,8 +83,22 @@ interface StationContextType {
 const StationContext = createContext<StationContextType | undefined>(undefined);
 
 export const StationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [stations, setStations] = useState<Station[]>(DataAccessLayer.getStations());
-  const [anomalies, setAnomalies] = useState<AnomalyRecord[]>(DataAccessLayer.getAnomalies());
+  const [stations, setStations] = useState<Station[]>(() => {
+    try {
+      const saved = localStorage.getItem('skyguard_stations');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return DataAccessLayer.getStations();
+  });
+  
+  const [anomalies, setAnomalies] = useState<AnomalyRecord[]>(() => {
+    try {
+      const saved = localStorage.getItem('skyguard_anomalies');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return DataAccessLayer.getAnomalies();
+  });
+  
   const [selectedStationId, setSelectedStationId] = useState<string | null>('INI0000VIDD');
   const [selectedAnomalyId, setSelectedAnomalyId] = useState<string | null>(null);
   const [currentTab, setCurrentTab] = useState<NavigationTab>('dashboard');
@@ -94,8 +108,32 @@ export const StationProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isControlledSimModalOpen, setIsControlledSimModalOpen] = useState<boolean>(false);
-  const [activeControlledSim, setActiveControlledSim] = useState<ActiveSimulationInfo | null>(null);
+  
+  const [activeControlledSim, setActiveControlledSim] = useState<ActiveSimulationInfo | null>(() => {
+    try {
+      const saved = localStorage.getItem('skyguard_active_sim');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return null;
+  });
+  
   const [preferredChartParam, setPreferredChartParam] = useState<ParameterType>('temperature');
+
+  useEffect(() => {
+    localStorage.setItem('skyguard_stations', JSON.stringify(stations));
+  }, [stations]);
+
+  useEffect(() => {
+    localStorage.setItem('skyguard_anomalies', JSON.stringify(anomalies));
+  }, [anomalies]);
+
+  useEffect(() => {
+    if (activeControlledSim) {
+      localStorage.setItem('skyguard_active_sim', JSON.stringify(activeControlledSim));
+    } else {
+      localStorage.removeItem('skyguard_active_sim');
+    }
+  }, [activeControlledSim]);
 
   // Initialize profile from localStorage or default
   const [currentUser, setCurrentUser] = useState<UserProfile>(() => {

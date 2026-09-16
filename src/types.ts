@@ -113,7 +113,7 @@ export interface Station {
   lat: number;
   lng: number;
   elevation: number;          // in meters
-  source: 'GHCNh' | 'IMD-AWS' | 'Prototype-Derived';
+  source: 'GHCNh' | 'Demo-AWS' | 'Prototype-Derived';
   datasetRows: number;        // e.g. 2952
   samplingInterval: string;   // e.g. '3 hours (03:00:00)'
   lastUpdated: string;
@@ -128,7 +128,7 @@ export interface Station {
   activeAnomalyId?: string;
   installedDate: string;
   sensorModel: string;
-  transmissionType: 'GPRS' | 'INSAT / Satellite' | 'LoRaWAN';
+  transmissionType: string;
   missingRatePct: number;
   duplicateTimestampsCount: number;
   isPrimaryGhcnhStation: boolean;

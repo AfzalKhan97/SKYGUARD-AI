@@ -200,17 +200,19 @@ export const LiveWeatherTable: React.FC<LiveWeatherTableProps> = ({
                     <td className="py-3 px-4 font-mono font-medium text-slate-900">
                       <div className="flex items-center gap-1.5">
                         <span className="group-hover:text-blue-700 transition-colors">{station.id}</span>
-                        {station.transmissionType === 'INSAT / Satellite' && (
-                          <span className="text-[9px] px-1 py-0.2 rounded bg-slate-100 text-slate-500 font-sans hidden sm:inline" title="INSAT-3DR Uplink">
-                            SAT
-                          </span>
-                        )}
                       </div>
                     </td>
 
                     {/* Location */}
                     <td className="py-3 px-4">
-                      <div className="font-semibold text-slate-900">{station.name}</div>
+                      <div className="font-semibold text-slate-900 flex items-center gap-2">
+                        {station.name}
+                        {station.isPrimaryGhcnhStation ? (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-sans border border-emerald-100">Verified Historical AWS</span>
+                        ) : (
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 font-sans border border-indigo-100">Demo Node</span>
+                        )}
+                      </div>
                       <div className="text-[11px] text-slate-500">{station.state}</div>
                     </td>
 

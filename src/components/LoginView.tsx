@@ -54,7 +54,7 @@ export const LoginView: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="login-email" className="block text-xs font-semibold text-slate-700 mb-1">
-                Email / IMD Operator ID
+                Email / Operator ID
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -127,7 +127,7 @@ export const LoginView: React.FC = () => {
             className="w-full py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-md text-xs font-bold flex items-center justify-center gap-2 shadow-xs transition"
           >
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            Demo Login as IMD Lead Operator
+            Demo Login as Lead Operator
           </button>
 
           {/* Prototype disclaimer note */}

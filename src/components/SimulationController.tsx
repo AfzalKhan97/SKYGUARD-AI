@@ -65,7 +65,7 @@ export const SimulationController: React.FC = () => {
       description: 'Test payload from DATA_SCHEMA.md: Instantaneous +22.6°C jump to 55.0°C.',
       observed: '55.0°C (Fault)',
       estimated: '32.4°C',
-      rootCause: 'Sensor Spike (Hardware ADC Fault)',
+      rootCause: 'Sensor Spike',
       type: 'Critical Fault',
       icon: AlertOctagon,
       accentColor: 'border-rose-200 text-rose-800 bg-rose-50 hover:bg-rose-100',
@@ -78,7 +78,7 @@ export const SimulationController: React.FC = () => {
       description: 'Gradual +4.8°C positive bias expanding across 14 consecutive diurnal cycles.',
       observed: '38.6°C (+4.8°C)',
       estimated: '33.8°C',
-      rootCause: 'Calibration Drift (Radiation Shield Aging)',
+      rootCause: 'Calibration Drift',
       type: 'Warning',
       icon: TrendingUp,
       accentColor: 'border-amber-200 text-amber-800 bg-amber-50 hover:bg-amber-100',
@@ -91,7 +91,7 @@ export const SimulationController: React.FC = () => {
       description: 'Temperature reading locked at static 24.2°C (σ²=0) across daytime insolation rise.',
       observed: '24.2°C (Static)',
       estimated: '26.8°C',
-      rootCause: 'Frozen / Stuck Transducer (ADC Latch-Up)',
+      rootCause: 'Frozen / Stuck Sensor',
       type: 'Warning',
       icon: Snowflake,
       accentColor: 'border-cyan-200 text-cyan-800 bg-cyan-50 hover:bg-cyan-100',
@@ -101,7 +101,7 @@ export const SimulationController: React.FC = () => {
       label: '5. Missing Telemetry',
       station: 'Delhi Safdarjung (INI0000VIDD)',
       stationId: 'INI0000VIDD',
-      description: 'Scheduled DCP 3-hour transmission window timed out / 0 bytes received.',
+      description: 'Scheduled 3-hour transmission window timed out / 0 bytes received.',
       observed: 'NULL / Dropout',
       estimated: '32.4°C (Imputed)',
       rootCause: 'Communication Failure (Packet Drop)',
@@ -140,6 +140,9 @@ export const SimulationController: React.FC = () => {
                 EVALUATION
               </span>
             </h2>
+            <p className="text-[10px] text-slate-500 mt-0.5">
+              Select a controlled scenario to simulate an observation and run it through the real SkyGuard ML pipeline.
+            </p>
           </div>
         </div>
 

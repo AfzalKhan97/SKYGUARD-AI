@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  X, 
-  FlaskConical, 
-  Zap, 
-  RotateCcw, 
-  Thermometer, 
-  Droplets, 
-  Gauge, 
-  AlertOctagon, 
-  TrendingUp, 
-  TrendingDown, 
-  WifiOff, 
-  CheckCircle, 
+import {
+  X,
+  FlaskConical,
+  Zap,
+  RotateCcw,
+  Thermometer,
+  Droplets,
+  Gauge,
+  AlertOctagon,
+  TrendingUp,
+  TrendingDown,
+  WifiOff,
+  CheckCircle,
   ArrowRight,
   ShieldAlert,
   Sparkles,
@@ -21,13 +21,13 @@ import { useStation } from '../context/StationContext';
 import { ParameterType, ControlledAnomalyType } from '../types';
 
 export const ControlledAnomalyModal: React.FC = () => {
-  const { 
-    isControlledSimModalOpen, 
-    setIsControlledSimModalOpen, 
-    stations, 
-    injectControlledAnomaly, 
-    activeControlledSim, 
-    resetControlledSimulation 
+  const {
+    isControlledSimModalOpen,
+    setIsControlledSimModalOpen,
+    stations,
+    injectControlledAnomaly,
+    activeControlledSim,
+    resetControlledSimulation
   } = useStation();
 
   const [selectedStationId, setSelectedStationId] = useState<string>('INI0000VIDD');
@@ -75,16 +75,16 @@ export const ControlledAnomalyModal: React.FC = () => {
   const currentReadingFormatted = selectedParam === 'temperature'
     ? `${currentTemp}°C`
     : selectedParam === 'humidity'
-    ? `${currentHum}%`
-    : `${currentPress} hPa`;
+      ? `${currentHum}%`
+      : `${currentPress} hPa`;
 
   const injectedReadingFormatted = customVal === 'NULL' || selectedAnomalyType === 'missing'
     ? 'NULL / Dropout'
     : selectedParam === 'temperature'
-    ? `${customVal}°C`
-    : selectedParam === 'humidity'
-    ? `${customVal}%`
-    : `${customVal} hPa`;
+      ? `${customVal}°C`
+      : selectedParam === 'humidity'
+        ? `${customVal}%`
+        : `${customVal} hPa`;
 
   // Predictive Diagnosis preview info
   const getPreviewDiagnosis = () => {
@@ -121,7 +121,7 @@ export const ControlledAnomalyModal: React.FC = () => {
           title: '🔴 Telemetry Missing / Packet Dropout',
           confidence: 'Pending Analysis',
           likelyCause: 'Communication failure / packet dropout / power loss',
-          causeDetail: 'Scheduled DCP 3-hour transmission window timed out with 0 bytes received from sensor ADC.',
+          causeDetail: 'Scheduled 3-hour transmission window timed out with 0 bytes received from sensor.',
           badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
         };
@@ -178,7 +178,7 @@ export const ControlledAnomalyModal: React.FC = () => {
         return {
           title: '🔴 Pressure Plunge Fault Detected',
           confidence: 'Pending Analysis',
-          likelyCause: 'Barometer diaphragm leakage / ADC reference fault',
+          likelyCause: 'Pattern consistent with abnormal sensor output',
           causeDetail: 'Pressure reading would correspond to Category 5 cyclone eye, physically implausible.',
           badge: 'Simulated Scenario',
           badgeColor: 'bg-rose-100 text-rose-800 border-rose-200',
@@ -221,7 +221,7 @@ export const ControlledAnomalyModal: React.FC = () => {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
       <div className="bg-white border border-slate-200 rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col my-auto animate-in fade-in zoom-in-95 duration-150">
-        
+
         {/* Modal Header */}
         <div className="px-5 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -252,7 +252,7 @@ export const ControlledAnomalyModal: React.FC = () => {
 
         {/* Modal Body */}
         <div className="p-5 space-y-4 text-xs text-slate-700 max-h-[78vh] overflow-y-auto">
-          
+
           {/* Step 1: Select Station */}
           <div>
             <label className="block text-xs font-bold text-slate-900 uppercase tracking-wider mb-1.5">
@@ -293,8 +293,8 @@ export const ControlledAnomalyModal: React.FC = () => {
                     onClick={() => setSelectedParam(param.id)}
                     className={`
                       p-2.5 rounded-lg border text-left flex items-center gap-2.5 transition-all
-                      ${isSelected 
-                        ? 'border-blue-700 bg-blue-50/80 text-blue-900 ring-1 ring-blue-700 font-semibold shadow-xs' 
+                      ${isSelected
+                        ? 'border-blue-700 bg-blue-50/80 text-blue-900 ring-1 ring-blue-700 font-semibold shadow-xs'
                         : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'}
                     `}
                   >
@@ -318,33 +318,33 @@ export const ControlledAnomalyModal: React.FC = () => {
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
-                { 
-                  id: 'spike' as ControlledAnomalyType, 
-                  label: 'Sudden Spike', 
+                {
+                  id: 'spike' as ControlledAnomalyType,
+                  label: 'Sudden Spike',
                   desc: 'Instant high outlier',
                   icon: AlertOctagon,
-                  color: 'text-rose-700 bg-rose-50' 
+                  color: 'text-rose-700 bg-rose-50'
                 },
-                { 
-                  id: 'drop' as ControlledAnomalyType, 
-                  label: 'Sudden Drop', 
+                {
+                  id: 'drop' as ControlledAnomalyType,
+                  label: 'Sudden Drop',
                   desc: 'Instant low plunge',
                   icon: TrendingDown,
-                  color: 'text-rose-700 bg-rose-50' 
+                  color: 'text-rose-700 bg-rose-50'
                 },
-                { 
-                  id: 'drift' as ControlledAnomalyType, 
-                  label: 'Sensor Drift', 
+                {
+                  id: 'drift' as ControlledAnomalyType,
+                  label: 'Sensor Drift',
                   desc: 'Gradual bias expansion',
                   icon: TrendingUp,
-                  color: 'text-amber-700 bg-amber-50' 
+                  color: 'text-amber-700 bg-amber-50'
                 },
-                { 
-                  id: 'missing' as ControlledAnomalyType, 
-                  label: 'Missing Telemetry', 
+                {
+                  id: 'missing' as ControlledAnomalyType,
+                  label: 'Missing Telemetry',
                   desc: 'Zero-byte packet drop',
                   icon: WifiOff,
-                  color: 'text-purple-700 bg-purple-50' 
+                  color: 'text-purple-700 bg-purple-50'
                 },
               ].map((anom) => {
                 const Icon = anom.icon;
@@ -357,8 +357,8 @@ export const ControlledAnomalyModal: React.FC = () => {
                     onClick={() => setSelectedAnomalyType(anom.id)}
                     className={`
                       p-2.5 rounded-lg border text-left flex flex-col justify-between transition-all min-h-[72px]
-                      ${isSelected 
-                        ? 'border-blue-700 bg-blue-50/80 text-blue-950 ring-1 ring-blue-700 font-semibold shadow-xs' 
+                      ${isSelected
+                        ? 'border-blue-700 bg-blue-50/80 text-blue-950 ring-1 ring-blue-700 font-semibold shadow-xs'
                         : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700'}
                     `}
                   >

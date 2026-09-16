@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { 
-  AlertOctagon, 
-  TrendingUp, 
-  Snowflake, 
-  WifiOff, 
-  CloudLightning, 
-  ArrowLeft, 
-  CheckCircle2, 
-  Clock, 
-  MapPin, 
-  Wrench, 
-  ShieldAlert, 
+import {
+  AlertOctagon,
+  TrendingUp,
+  Snowflake,
+  WifiOff,
+  CloudLightning,
+  ArrowLeft,
+  CheckCircle2,
+  Clock,
+  MapPin,
+  Wrench,
+  ShieldAlert,
   Sparkles,
   BarChart3,
   Activity,
@@ -32,7 +32,7 @@ interface AnomalyDetailsModalProps {
 
 export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomalyId, onBack }) => {
   const { anomalies, selectedAnomalyId, setSelectedAnomalyId, resolveAnomaly, setSelectedStationId, setCurrentTab } = useStation();
-  
+
   const targetId = anomalyId || selectedAnomalyId;
   const anomaly = anomalies.find(a => a.id === targetId) || anomalies[0];
 
@@ -157,7 +157,7 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
           {/* Step 6: Action */}
           <div className="bg-slate-800/80 p-2.5 rounded border border-slate-700">
             <span className="text-[9px] text-emerald-400 font-mono block">STAGE 6</span>
-            <span className="font-bold text-emerald-300 block mt-0.5">Correction</span>
+            <span className="font-bold text-emerald-300 block mt-0.5">Recommended Action</span>
             <span className="text-[10px] text-slate-400 block mt-1 font-mono">
               {typeof anomaly.estimatedValue === 'number' ? `${anomaly.estimatedValue}${anomaly.unit}` : 'Imputed'}
             </span>
@@ -168,12 +168,11 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
       {/* Main Anomaly Summary Card */}
       <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-          
+
           <div className="flex items-start gap-3">
-            <div className={`p-3 rounded-lg ${
-              anomaly.severity === 'critical' ? 'bg-rose-100 text-rose-800' :
+            <div className={`p-3 rounded-lg ${anomaly.severity === 'critical' ? 'bg-rose-100 text-rose-800' :
               anomaly.severity === 'warning' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
-            }`}>
+              }`}>
               <Icon className="w-6 h-6" />
             </div>
 
@@ -186,17 +185,15 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
                 <span className="text-xs font-semibold text-slate-800">
                   {anomaly.stationName}, {anomaly.state}
                 </span>
-                <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                  anomaly.severity === 'critical' ? 'bg-rose-100 text-rose-800' :
+                <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${anomaly.severity === 'critical' ? 'bg-rose-100 text-rose-800' :
                   anomaly.severity === 'warning' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
-                }`}>
+                  }`}>
                   {anomaly.severity}
                 </span>
-                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
-                  anomaly.status === 'Active' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
+                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${anomaly.status === 'Active' ? 'bg-rose-50 text-rose-700 border border-rose-200' :
                   anomaly.status === 'Under Investigation' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                  'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                }`}>
+                    'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                  }`}>
                   {anomaly.status}
                 </span>
               </div>
@@ -204,7 +201,7 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
               <h1 className="text-xl font-bold text-slate-900 tracking-tight">
                 {anomaly.anomalyType} Flagged on {anomaly.parameter.toUpperCase()}
               </h1>
-              
+
               <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />
                 Observation Timestamp: <strong className="text-slate-700">{anomaly.timestamp}</strong>
@@ -215,7 +212,7 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
           {/* Three-Way Model Probabilities */}
           <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 min-w-[220px]">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1.5">
-              XGBoost 3-Way Calibrated Output
+              XGBoost 3-Class Output
             </span>
             <div className="space-y-1 text-xs">
               <div className="flex justify-between">
@@ -249,7 +246,7 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
           </div>
 
           <div className="bg-white p-3 rounded border border-slate-200">
-            <span className="text-[10px] font-bold uppercase text-slate-500 block">ML Corrected / Estimated</span>
+            <span className="text-[10px] font-bold uppercase text-slate-500 block">Observed / Validated Value</span>
             <span className="text-xl font-bold font-mono text-emerald-700 block mt-1">
               {anomaly.estimatedValue} {typeof anomaly.estimatedValue === 'number' ? anomaly.unit : ''}
             </span>
@@ -285,11 +282,10 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
                   <span className="font-mono text-blue-900 font-bold">{(val as number).toFixed(2)}</span>
                 </div>
                 <div className="w-full bg-slate-200 rounded-full h-1 mt-1 overflow-hidden">
-                  <div 
-                    className={`h-1 rounded-full ${
-                      (val as number) >= 0.75 ? 'bg-rose-500' :
+                  <div
+                    className={`h-1 rounded-full ${(val as number) >= 0.75 ? 'bg-rose-500' :
                       (val as number) >= 0.45 ? 'bg-amber-500' : 'bg-emerald-500'
-                    }`}
+                      }`}
                     style={{ width: `${Math.min(100, (val as number) * 100)}%` }}
                   />
                 </div>
@@ -310,17 +306,16 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {anomaly.shapContributions.map((shap, idx) => (
-              <div 
+              <div
                 key={idx}
                 className="bg-white p-3 rounded-lg border border-slate-200 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-1">
                     <span className="font-semibold text-slate-800 text-xs">{shap.label}</span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${
-                      shap.impact === 'increases_fault_risk' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'
-                    }`}>
-                      {shap.shapValue > 0 ? `+${shap.shapValue}` : shap.shapValue}
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${shap.impact === 'increases_fault_risk' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'
+                      }`} title="SHAP (SHapley Additive exPlanations) impact value">
+                      {shap.shapValue > 0 ? `+${shap.shapValue.toFixed(2)}` : shap.shapValue.toFixed(2)}
                     </span>
                   </div>
 
@@ -335,7 +330,7 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
 
         {/* Diagnostic Explanation & Recommended Action */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5 pt-4 border-t border-slate-100 text-xs">
-          
+
           <div className="p-3.5 bg-slate-50 rounded-lg border border-slate-200">
             <h4 className="font-bold text-slate-900 mb-1">Meteorological Diagnostic Summary</h4>
             <p className="text-slate-600 leading-relaxed text-[11px]">
@@ -366,7 +361,7 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
               <textarea
                 value={operatorNote}
                 onChange={(e) => setOperatorNote(e.target.value)}
-                placeholder="Add operator notes (e.g. Verified against regional radar; PT100 terminal cleaned; sensor recalibrated)..."
+                placeholder="Add operator notes (e.g. Verified against regional radar; Check local sensor logs)..."
                 rows={2}
                 className="w-full text-xs p-2.5 bg-slate-50 border border-slate-200 rounded-md focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-700"
               />
@@ -384,7 +379,7 @@ export const AnomalyDetailsModal: React.FC<AnomalyDetailsModalProps> = ({ anomal
                   onClick={() => handleAction('Resolved', 'Sensor calibrated & anomaly marked Resolved')}
                   className="px-3 py-2 bg-emerald-700 text-white rounded text-xs font-semibold hover:bg-emerald-800 transition"
                 >
-                  Resolve & Calibrate
+                  Mark Resolved
                 </button>
               </div>
 

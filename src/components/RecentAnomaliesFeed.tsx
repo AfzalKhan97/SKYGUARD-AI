@@ -106,12 +106,19 @@ export const RecentAnomaliesFeed: React.FC<RecentAnomaliesFeedProps> = ({ onInve
                     </div>
                   </div>
 
-                  <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                    isCritical ? 'bg-rose-100 text-rose-800' :
-                    isWarning ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
-                  }`}>
-                    {anom.severity}
-                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {anom.is_injected && (
+                      <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">
+                        Simulated Scenario
+                      </span>
+                    )}
+                    <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                      isCritical ? 'bg-rose-100 text-rose-800' :
+                      isWarning ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {anom.severity}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Values & Confidence Row */}

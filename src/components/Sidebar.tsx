@@ -114,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           
           <div className="px-3 py-2 text-[11px] text-slate-500 bg-slate-50 rounded-md border border-slate-100 space-y-1.5">
             <div className="flex items-center justify-between text-slate-700 font-medium">
-              <span>WMO / IMD Standard</span>
+              <span>MVP Dashboard</span>
               <span className="text-[10px] text-emerald-600 font-mono">QCv4.2</span>
             </div>
             <p className="text-[10px] leading-relaxed text-slate-500">

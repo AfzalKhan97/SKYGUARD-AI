@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, Legend 
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
 } from 'recharts';
-import { 
+import {
   BarChart3, Activity, AlertTriangle, ShieldCheck, Database, RefreshCw
 } from 'lucide-react';
 
@@ -56,7 +56,7 @@ export const AnalyticsView: React.FC = () => {
 
   const xgbHist = metrics.historical_metrics.XGBoost;
   const xgbScen = metrics.scenario_metrics.XGBoost;
-  
+
   // Format Confusion Matrix for charting
   const cm = xgbScen.confusion_matrix;
   const cmData = [
@@ -94,46 +94,46 @@ export const AnalyticsView: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-xs">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase">Historical Accuracy</span>
+            <span className="text-xs font-bold text-slate-500 uppercase">Historical Test-Period Accuracy</span>
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
           </div>
           <div className="text-2xl font-bold font-mono text-slate-800">
             {(xgbHist.accuracy * 100).toFixed(2)}%
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">XGBoost Baseline (Clean Data)</p>
+          <p className="text-[10px] text-slate-400 mt-1">Clean historical test-period recognition</p>
         </div>
 
         <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-xs">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase">Scenario Detection (F1)</span>
+            <span className="text-xs font-bold text-slate-500 uppercase">Scenario Accuracy</span>
             <Activity className="w-4 h-4 text-blue-600" />
           </div>
           <div className="text-2xl font-bold font-mono text-slate-800">
-            {xgbScen.macro_f1.toFixed(3)}
+            {(xgbScen.accuracy * 100).toFixed(2)}%
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">Macro F1 (Anomalies injected)</p>
+          <p className="text-[10px] text-slate-400 mt-1">169 Scenario Observations Evaluated</p>
         </div>
-        
+
         <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-xs">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase">Fault Precision</span>
-            <AlertTriangle className="w-4 h-4 text-rose-600" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-slate-800">
-            {(xgbScen.per_class["Sensor Fault"].precision * 100).toFixed(1)}%
-          </div>
-          <p className="text-[10px] text-slate-400 mt-1">True Positive Rate for faults</p>
-        </div>
-        
-        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-xs">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase">Model Type</span>
+            <span className="text-xs font-bold text-slate-500 uppercase">Macro F1</span>
             <BarChart3 className="w-4 h-4 text-purple-600" />
           </div>
-          <div className="text-xl font-bold font-mono text-slate-800 pt-1">
-            XGBoost (3-Class)
+          <div className="text-2xl font-bold font-mono text-slate-800">
+            {(xgbScen.macro_f1 * 100).toFixed(2)}%
           </div>
-          <p className="text-[10px] text-slate-400 mt-1">Tree-based Gradient Boosting</p>
+          <p className="text-[10px] text-slate-400 mt-1">Balanced metric across 3 classes</p>
+        </div>
+
+        <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-xs">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-xs font-bold text-slate-500 uppercase">Fault / Uncertain Recall</span>
+            <AlertTriangle className="w-4 h-4 text-rose-600" />
+          </div>
+          <div className="text-xl font-bold font-mono text-slate-800 pt-1">
+            {(xgbScen.per_class["Sensor Fault"].recall * 100).toFixed(0)}% / {(xgbScen.per_class["Uncertain"].recall * 100).toFixed(0)}%
+          </div>
+          <p className="text-[10px] text-slate-400 mt-1">True Positive Rate for scenarios</p>
         </div>
       </div>
 

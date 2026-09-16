@@ -170,7 +170,7 @@ export const SettingsView: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <h2 className="text-sm font-bold text-slate-900">{profileForm.name || 'Operator Name'}</h2>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200 font-semibold">
-                      {profileForm.badge || 'IMD-QC-9842'}
+                      {profileForm.badge || 'Demo Operator'}
                     </span>
                   </div>
                   <p className="text-xs text-slate-500">{profileForm.role} • {profileForm.organization}</p>
@@ -215,7 +215,7 @@ export const SettingsView: React.FC = () => {
                     required
                     value={profileForm.badge}
                     onChange={(e) => handleProfileFieldChange('badge', e.target.value)}
-                    placeholder="e.g. IMD-QC-9842"
+                    placeholder="e.g. Demo Operator"
                     className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-md focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-700 text-slate-900 font-mono"
                   />
                 </div>
@@ -286,7 +286,7 @@ export const SettingsView: React.FC = () => {
               {/* Email */}
               <div>
                 <label htmlFor="settings-profile-email" className="block text-slate-700 font-semibold mb-1">
-                  Official IMD / Government Email <span className="text-rose-500">*</span>
+                  Official Email <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />

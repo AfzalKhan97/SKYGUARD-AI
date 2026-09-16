@@ -472,7 +472,7 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
               </div>
 
               <div className="mt-3 text-[10px] text-slate-400 leading-tight">
-                * Operator protocol: Anomaly record is permanently logged for IMD audit trail compliance.
+                * Operator protocol: Anomaly record is permanently logged for audit trail compliance.
               </div>
             </div>
 

@@ -45,6 +45,8 @@ interface StationContextType {
   currentUser: UserProfile;
   isProfileModalOpen: boolean;
   isControlledSimModalOpen: boolean;
+  isAnalyzing: boolean;
+  lastAnalysisResult: any;
   activeControlledSim: ActiveSimulationInfo | null;
   preferredChartParam: ParameterType;
   isLiveUpdating: boolean;
@@ -58,6 +60,7 @@ interface StationContextType {
   setScenario: (scenario: SimulationScenario) => void;
   setIsProfileModalOpen: (open: boolean) => void;
   setIsControlledSimModalOpen: (open: boolean) => void;
+  setLastAnalysisResult: (res: any) => void;
   injectControlledAnomaly: (params: ControlledSimulationParams) => void;
   resetControlledSimulation: () => void;
   updateUserProfile: (updatedFields: Partial<UserProfile>) => void;
@@ -108,6 +111,8 @@ export const StationProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState<boolean>(false);
   const [isControlledSimModalOpen, setIsControlledSimModalOpen] = useState<boolean>(false);
+  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
+  const [lastAnalysisResult, setLastAnalysisResult] = useState<any>(null);
   
   const [activeControlledSim, setActiveControlledSim] = useState<ActiveSimulationInfo | null>(() => {
     try {
@@ -116,7 +121,6 @@ export const StationProvider: React.FC<{ children: React.ReactNode }> = ({ child
     } catch {}
     return null;
   });
-  
   const [preferredChartParam, setPreferredChartParam] = useState<ParameterType>('temperature');
 
   useEffect(() => {
@@ -190,6 +194,7 @@ export const StationProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const resetControlledSimulation = async () => {
     setActiveControlledSim(null);
+    setLastAnalysisResult(null);
     await setScenario('NORMAL');
   };
 
@@ -235,10 +240,32 @@ export const StationProvider: React.FC<{ children: React.ReactNode }> = ({ child
       pressure: params.parameter === 'pressure' ? injectedNumericVal : currentP,
     };
 
+    setIsAnalyzing(true);
+    // Neutralize any old results
+    setActiveControlledSim(null);
+    setSelectedAnomalyId(null);
+
     // CALL REAL ML API
     const analysis = await analyzeStationData(targetStation, stations, newReading, targetStation.history || []);
     
+    setLastAnalysisResult(analysis);
+    setIsAnalyzing(false);
+
     const newAnomalyId = `ANM-${Math.floor(Math.random() * 100000).toString().padStart(5, '0')}`;
+    
+    const activeInfo: ActiveSimulationInfo = {
+      stationId: params.stationId,
+      stationName,
+      injectedValue: injectedNumericVal !== null ? String(injectedNumericVal) : 'NULL',
+      expectedValue: String(currentT), // Default to temp expectation, will be handled below properly
+      anomalyTitle: params.anomalyType.toUpperCase(),
+      likelyCause: analysis.rootCause,
+      confidence: analysis.confidence
+    };
+    if (params.parameter === 'humidity') activeInfo.expectedValue = String(currentRH);
+    if (params.parameter === 'pressure') activeInfo.expectedValue = String(currentP);
+
+    setActiveControlledSim(activeInfo);
 
     setStations(prev => {
       return prev.map(s => {
@@ -388,6 +415,8 @@ export const StationProvider: React.FC<{ children: React.ReactNode }> = ({ child
         datasetReport,
         isProfileModalOpen,
         isControlledSimModalOpen,
+        isAnalyzing,
+        lastAnalysisResult,
         activeControlledSim,
         preferredChartParam,
         setSearchQuery,
@@ -398,6 +427,7 @@ export const StationProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setScenario,
         setIsProfileModalOpen,
         setIsControlledSimModalOpen,
+        setLastAnalysisResult,
         injectControlledAnomaly,
         resetControlledSimulation,
         updateUserProfile,

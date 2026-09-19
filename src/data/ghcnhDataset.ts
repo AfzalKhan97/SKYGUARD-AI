@@ -449,7 +449,7 @@ export const GHCNH_STATIONS: Station[] = [
   {
     id: 'AWS-NCR-01',
     code: 'NCR01',
-    name: 'Delhi (Palam Airport) (Demo Node)',
+    name: 'Delhi (Palam Airport) — Demo Node',
     state: 'Delhi NCR',
     district: 'South West Delhi',
     region: 'North',
@@ -482,7 +482,7 @@ export const GHCNH_STATIONS: Station[] = [
   {
     id: 'AWS-RAJ-02',
     code: 'RAJ02',
-    name: 'Jaipur (Sanganer) (Demo Node)',
+    name: 'Jaipur (Sanganer) — Demo Node',
     state: 'Rajasthan',
     district: 'Jaipur',
     region: 'North',
@@ -515,7 +515,7 @@ export const GHCNH_STATIONS: Station[] = [
   {
     id: 'AWS-UTK-01',
     code: 'UTK01',
-    name: 'Pantnagar (Tarai) (Demo Node)',
+    name: 'Pantnagar (Tarai) — Demo Node',
     state: 'Uttarakhand',
     district: 'Udham Singh Nagar',
     region: 'North',

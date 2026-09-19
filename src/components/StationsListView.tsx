@@ -49,12 +49,9 @@ export const StationsListView: React.FC = () => {
       <div className="bg-white border border-slate-200 rounded-lg p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              <Radio className="w-5 h-5 text-blue-800" />
-              <span>National Automatic Weather Station Fleet ({stations.length} Nodes)</span>
-            </h1>
-            <p className="text-xs text-slate-500 mt-1">
-              Live meteorological sensors, transmission health, and continuous quality assurance
+            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">SkyGuard AWS Monitoring Network (6 Nodes)</h1>
+            <p className="text-sm text-slate-500 mt-1">
+              Live anomaly detection across historical observation nodes and demonstrator targets.
             </p>
           </div>
         </div>
@@ -65,7 +62,7 @@ export const StationsListView: React.FC = () => {
           <div className="flex flex-wrap items-center gap-2">
             {/* Status Filter */}
             <div className="inline-flex rounded-md border border-slate-200 p-0.5 bg-slate-50">
-              {['All', 'Healthy', 'Attention', 'Critical'].map(status => (
+              {['All', 'Trusted', 'Attention', 'Critical'].map(status => (
                 <button
                   key={status}
                   onClick={() => setSelectedStatus(status)}
@@ -183,7 +180,7 @@ export const StationsListView: React.FC = () => {
               <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-1.5">
                   <Activity className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-slate-500 text-[11px]">Health:</span>
+                  <span className="text-slate-500 text-[11px]">Sensor Data Trust:</span>
                   <span className={`font-bold font-mono ${
                     station.overallHealthScore >= 90 ? 'text-emerald-700' :
                     station.overallHealthScore >= 70 ? 'text-amber-700' : 'text-rose-700'

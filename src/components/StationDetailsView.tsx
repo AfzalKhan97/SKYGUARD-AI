@@ -27,6 +27,86 @@ import { useStation } from '../context/StationContext';
 import { TrendChart } from './TrendChart';
 import { analyzeStationData } from '../services/anomalyEngine';
 
+const useAnimatedNumber = (end: number, duration: number = 800) => {
+  const [val, setVal] = React.useState(0);
+  React.useEffect(() => {
+    let startTimestamp: number | null = null;
+    let animationFrameId: number;
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 4); // easeOutQuart
+      setVal(progress === 1 ? end : end * ease);
+      if (progress < 1) {
+        animationFrameId = window.requestAnimationFrame(step);
+      }
+    };
+    animationFrameId = window.requestAnimationFrame(step);
+    return () => window.cancelAnimationFrame(animationFrameId);
+  }, [end, duration]);
+  return val;
+};
+
+const AnimatedEvidenceCard = ({ dim }: { dim: any }) => {
+  const animatedVal = useAnimatedNumber(dim.val, 800);
+  const [showTooltip, setShowTooltip] = React.useState(false);
+  return (
+    <div 
+      className="p-2 bg-slate-50 rounded border border-slate-100 cursor-pointer hover:bg-slate-100 transition relative"
+      onClick={() => setShowTooltip(!showTooltip)}
+    >
+      <div className="flex justify-between text-[11px] font-semibold text-slate-700 mb-1">
+        <span>{dim.label}</span>
+        <span className="font-mono text-blue-950 font-bold">{animatedVal.toFixed(2)}</span>
+      </div>
+      <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+        <div 
+          className={`h-1.5 rounded-full ${
+            animatedVal >= 0.75 ? 'bg-rose-500' :
+            animatedVal >= 0.45 ? 'bg-amber-500' : 'bg-emerald-500'
+          }`}
+          style={{ width: `${Math.min(100, animatedVal * 100)}%` }}
+        />
+      </div>
+      <span className="text-[9px] text-slate-400 mt-1 block truncate">{dim.desc}</span>
+      {showTooltip && (
+        <div className="absolute top-full left-0 mt-1 z-50 w-48 p-2 bg-slate-800 text-slate-100 text-[10px] rounded shadow-lg whitespace-normal leading-tight">
+           {dim.explanation}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ClickableShapItem = ({ shap }: { shap: any }) => {
+  const [showTooltip, setShowTooltip] = React.useState(false);
+  return (
+    <li className="text-[11px] relative cursor-pointer group" onClick={() => setShowTooltip(!showTooltip)}>
+      <div className="flex items-center justify-between font-semibold mb-0.5 p-1 rounded hover:bg-slate-50 transition">
+        <span className="text-slate-800">{shap.label}</span>
+        <span className={`font-mono text-[10px] px-1.5 py-0.2 rounded ${
+          shap.impact === 'increases_fault_risk' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'
+        }`}>
+          {shap.shapValue > 0 ? '+' : ''}{shap.shapValue.toFixed(2)}
+        </span>
+      </div>
+      <div className="w-full bg-slate-100 rounded-full h-1">
+        <div 
+          className={`h-1 rounded-full ${shap.impact === 'increases_fault_risk' ? 'bg-rose-400' : 'bg-emerald-400'}`}
+          style={{ width: `${Math.min(100, Math.abs(shap.shapValue) * 30)}%` }}
+        />
+      </div>
+      {showTooltip && (
+        <div className="absolute top-full left-0 mt-1 z-50 w-56 p-2 bg-slate-800 text-slate-100 text-[10px] rounded shadow-lg whitespace-normal leading-tight">
+          {shap.impact === 'increases_fault_risk' 
+            ? "Positive contribution: this feature increased the model's Sensor/Data Fault score."
+            : "Negative contribution: this feature reduced the model's Sensor/Data Fault score."}
+        </div>
+      )}
+    </li>
+  );
+};
+
 interface StationDetailsViewProps {
   onBack?: () => void;
   onOpenAnomalyDetails?: (anomalyId: string) => void;
@@ -41,7 +121,11 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
     stations, 
     setSelectedAnomalyId,
     selectedStationAnomaly,
-    setCurrentTab
+    setCurrentTab,
+    isAnalyzing,
+    lastAnalysisResult,
+    preferredChartParam,
+    setPreferredChartParam
   } = useStation();
 
   if (!selectedStation) {
@@ -52,29 +136,49 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
     );
   }
 
-  const [analysis, setAnalysis] = React.useState<any>(null);
+  // Derive analysis data from recent active run or an existing real anomaly
+  let analysis = lastAnalysisResult;
+  if (!analysis && selectedStationAnomaly) {
+    analysis = {
+      anomalyDetected: true,
+      classification: selectedStationAnomaly.classification,
+      probabilities: selectedStationAnomaly.probabilities,
+      rootCause: selectedStationAnomaly.rootCause,
+      anomalyType: selectedStationAnomaly.anomalyType,
+      severity: selectedStationAnomaly.severity,
+      confidence: selectedStationAnomaly.confidence,
+      evidenceVector: selectedStationAnomaly.evidenceVector,
+      shapContributions: selectedStationAnomaly.shapContributions,
+      observedValue: selectedStationAnomaly.observedValue,
+      unit: selectedStationAnomaly.unit,
+      affectedSensor: selectedStationAnomaly.parameter
+    };
+  }
 
-  React.useEffect(() => {
-    if (selectedStation) {
-      analyzeStationData(
-        selectedStation,
-        stations,
-        selectedStation.currentReadings,
-        selectedStation.history
-      ).then(setAnalysis);
-    }
-  }, [selectedStation, stations]);
-
-  if (!analysis) {
+  if (isAnalyzing) {
     return (
-      <div className="p-8 text-center text-slate-500 text-sm">
-        Running ML Pipeline...
+      <div className="p-8 flex flex-col items-center justify-center space-y-6 min-h-[400px]">
+        <h3 className="text-xl font-bold text-slate-800 animate-pulse">ANALYZING...</h3>
+        <p className="text-sm text-slate-500">Processing observation through SkyGuard ML pipeline...</p>
+        <div className="w-full max-w-lg space-y-2 mt-4">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-mono">
+            <span className="text-blue-600 font-bold">✓ Observation received</span>
+            <span className="text-blue-600 font-bold">✓ Preprocessing</span>
+            <span className="text-blue-600 font-bold animate-pulse">● Building 11D Evidence</span>
+            <span>○ XGBoost</span>
+            <span>○ SHAP</span>
+            <span>○ Diagnosis</span>
+          </div>
+          <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+            <div className="h-1.5 rounded-full bg-blue-500 animate-[pulse_1s_ease-in-out_infinite]" style={{ width: '40%' }}></div>
+          </div>
+        </div>
       </div>
     );
   }
 
-  const isAnomaly = analysis.anomalyDetected;
-  const ev = analysis.evidenceVector;
+  const isAnomaly = analysis ? analysis.anomalyDetected : false;
+  const ev = analysis ? analysis.evidenceVector : null;
 
   return (
     <div className="space-y-6">
@@ -174,11 +278,16 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
         {/* Temperature Channel */}
-        <div className={`p-4 rounded-lg border bg-white shadow-xs ${
-          analysis.affectedSensor === 'temperature' && isAnomaly
-            ? 'border-rose-300 ring-1 ring-rose-200' 
-            : 'border-slate-200'
-        }`}>
+        <div 
+          onClick={() => setPreferredChartParam('temperature')}
+          className={`p-4 rounded-lg border shadow-xs cursor-pointer hover:border-blue-300 transition-colors ${
+            analysis?.affectedSensor === 'temperature' && isAnomaly
+              ? 'border-rose-300 ring-1 ring-rose-200 bg-rose-50/20' 
+              : preferredChartParam === 'temperature'
+              ? 'border-blue-400 bg-blue-50/30 ring-1 ring-blue-300'
+              : 'border-slate-200 bg-white'
+          }`}
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
               <Thermometer className="w-4 h-4 text-blue-800" />
@@ -210,7 +319,16 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
         </div>
 
         {/* Humidity Channel */}
-        <div className="p-4 rounded-lg border border-slate-200 bg-white shadow-xs">
+        <div 
+          onClick={() => setPreferredChartParam('humidity')}
+          className={`p-4 rounded-lg border shadow-xs cursor-pointer hover:border-blue-300 transition-colors ${
+            analysis?.affectedSensor === 'humidity' && isAnomaly
+              ? 'border-rose-300 ring-1 ring-rose-200 bg-rose-50/20' 
+              : preferredChartParam === 'humidity'
+              ? 'border-blue-400 bg-blue-50/30 ring-1 ring-blue-300'
+              : 'border-slate-200 bg-white'
+          }`}
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
               <Droplets className="w-4 h-4 text-sky-700" />
@@ -242,7 +360,16 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
         </div>
 
         {/* Pressure Channel */}
-        <div className="p-4 rounded-lg border border-slate-200 bg-white shadow-xs">
+        <div 
+          onClick={() => setPreferredChartParam('pressure')}
+          className={`p-4 rounded-lg border shadow-xs cursor-pointer hover:border-blue-300 transition-colors ${
+            analysis?.affectedSensor === 'pressure' && isAnomaly
+              ? 'border-rose-300 ring-1 ring-rose-200 bg-rose-50/20' 
+              : preferredChartParam === 'pressure'
+              ? 'border-blue-400 bg-blue-50/30 ring-1 ring-blue-300'
+              : 'border-slate-200 bg-white'
+          }`}
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
               <Gauge className="w-4 h-4 text-slate-700" />
@@ -278,6 +405,14 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
       {/* Historical Trend Chart (Raw vs Corrected & 3-hour cycle) */}
       <TrendChart station={selectedStation} showStationSelector={false} />
 
+      {!analysis ? (
+        <div className="p-12 text-center border rounded-lg bg-slate-50/50 border-slate-200 shadow-xs">
+          <CheckCircle2 className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+          <h3 className="text-lg font-bold text-slate-700">Ready for analysis</h3>
+          <p className="text-sm text-slate-500 mt-1">Select a scenario and click RUN AI ANALYSIS to evaluate this observation through the ML pipeline.</p>
+        </div>
+      ) : (
+        <>
       {/* 11-DIMENSIONAL EVIDENCE VECTOR & AI DIAGNOSTICS CARD */}
       <div className={`
         border rounded-lg p-5 shadow-xs transition-all
@@ -362,34 +497,19 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
             {[
-              { label: 'Temporal', val: ev.temporal, desc: 'Autoregression dev' },
-              { label: 'Seasonal', val: ev.seasonal, desc: 'Diurnal envelope' },
-              { label: 'Change', val: ev.change, desc: 'Step rate of change' },
-              { label: 'Multivariate', val: ev.multivariate, desc: 'Psychrometric diff' },
-              { label: 'Spatial', val: ev.spatial, desc: 'Neighbor residual' },
-              { label: 'History', val: ev.history, desc: 'Prior fault rate' },
-              { label: 'Physics', val: ev.physics, desc: 'Physical bounds' },
-              { label: 'Spatial Coh.', val: ev.spatial_coherence, desc: 'Network agreement' },
-              { label: 'Temporal Coh.', val: ev.temporal_coherence, desc: 'Step consistency' },
-              { label: 'Multi Coh.', val: ev.multivariate_coherence, desc: 'T vs RH thermodynamic' },
-              { label: 'Persistence', val: ev.persistence, desc: 'Duration in cycles' },
+              { label: 'Temporal', val: ev.temporal, desc: 'Autoregression dev', explanation: 'Measures deviation from recent temporal behaviour.' },
+              { label: 'Seasonal', val: ev.seasonal, desc: 'Diurnal envelope', explanation: 'Measures departure from expected diurnal or seasonal cycles.' },
+              { label: 'Change', val: ev.change, desc: 'Step rate of change', explanation: 'Measures the magnitude of sudden step changes.' },
+              { label: 'Multivariate', val: ev.multivariate, desc: 'Psychrometric diff', explanation: 'Measures consistency among temperature, pressure and humidity.' },
+              { label: 'Spatial', val: ev.spatial, desc: 'Neighbor residual', explanation: 'Measures consistency with available neighbouring station observations.' },
+              { label: 'History', val: ev.history, desc: 'Prior fault rate', explanation: 'Historical frequency of faults for this specific sensor.' },
+              { label: 'Physics', val: ev.physics, desc: 'Physical bounds', explanation: 'Checks plausibility against atmospheric physics and lapse rates.' },
+              { label: 'Spatial Coh.', val: ev.spatial_coherence, desc: 'Network agreement', explanation: 'Evaluates broad spatial agreement across the network.' },
+              { label: 'Temporal Coh.', val: ev.temporal_coherence, desc: 'Step consistency', explanation: 'Evaluates temporal consistency across multiple recent intervals.' },
+              { label: 'Multi Coh.', val: ev.multivariate_coherence, desc: 'T vs RH thermodynamic', explanation: 'Cross-checks thermodynamic invariants.' },
+              { label: 'Persistence', val: ev.persistence, desc: 'Duration in cycles', explanation: 'Measures how long suspicious behaviour continues.' },
             ].map((dim) => (
-              <div key={dim.label} className="p-2 bg-slate-50 rounded border border-slate-100">
-                <div className="flex justify-between text-[11px] font-semibold text-slate-700 mb-1">
-                  <span>{dim.label}</span>
-                  <span className="font-mono text-blue-950 font-bold">{dim.val.toFixed(2)}</span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
-                  <div 
-                    className={`h-1.5 rounded-full ${
-                      dim.val >= 0.75 ? 'bg-rose-500' :
-                      dim.val >= 0.45 ? 'bg-amber-500' : 'bg-emerald-500'
-                    }`}
-                    style={{ width: `${Math.min(100, dim.val * 100)}%` }}
-                  />
-                </div>
-                <span className="text-[9px] text-slate-400 mt-1 block truncate">{dim.desc}</span>
-              </div>
+              <AnimatedEvidenceCard key={dim.label} dim={dim} />
             ))}
           </div>
         </div>
@@ -494,11 +614,11 @@ export const StationDetailsView: React.FC<StationDetailsViewProps> = ({
                 </button>
               )}
             </div>
-
           </div>
-
         </div>
       </div>
+      </>
+      )}
     </div>
   );
 };

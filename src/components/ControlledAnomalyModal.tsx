@@ -27,10 +27,18 @@ export const ControlledAnomalyModal: React.FC = () => {
     stations,
     injectControlledAnomaly,
     activeControlledSim,
-    resetControlledSimulation
+    resetControlledSimulation,
+    selectedStationId: globalSelectedStationId
   } = useStation();
 
   const [selectedStationId, setSelectedStationId] = useState<string>('INI0000VIDD');
+
+  // Auto-sync local selection with the globally selected station when the modal opens
+  useEffect(() => {
+    if (isControlledSimModalOpen && globalSelectedStationId) {
+      setSelectedStationId(globalSelectedStationId);
+    }
+  }, [isControlledSimModalOpen, globalSelectedStationId]);
   const [selectedParam, setSelectedParam] = useState<ParameterType>('temperature');
   const [selectedAnomalyType, setSelectedAnomalyType] = useState<ControlledAnomalyType>('spike');
   const [customVal, setCustomVal] = useState<string>('');
@@ -230,7 +238,7 @@ export const ControlledAnomalyModal: React.FC = () => {
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                <span>SIH CONTROLLED SCENARIO INJECTOR</span>
+                <span>CONTROLLED SCENARIO INJECTOR</span>
                 <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800 border border-blue-200">
                   SIMULATED SCENARIO
                 </span>

@@ -173,15 +173,7 @@ export const SimulationController: React.FC = () => {
             </div>
           )}
 
-          {/* Test Anomaly Simulation Primary Modal Trigger */}
-          <button
-            id="open-test-anomaly-simulation-btn"
-            onClick={() => setIsControlledSimModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-blue-900 hover:bg-blue-950 text-white text-xs font-bold shadow-xs hover:shadow transition"
-          >
-            <Zap className="w-3.5 h-3.5 fill-current text-amber-400" />
-            <span>RUN AI ANALYSIS</span>
-          </button>
+
 
           <button
             onClick={() => setIsExpanded(!isExpanded)}

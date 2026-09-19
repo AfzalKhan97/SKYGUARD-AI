@@ -89,6 +89,8 @@ async def analyze_station(request: Request):
         }
         
     # 2. Extract Evidence Vector
+    import asyncio
+    await asyncio.sleep(2.5) # Simulate production data fetch and heavy ML inference latency
     ev = extractor.compute_evidence(row, hist_formatted, latest_spatial)
     
     # 3. Predict (Multiclass: 0=Genuine, 1=Uncertain, 2=Fault)

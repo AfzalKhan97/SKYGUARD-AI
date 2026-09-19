@@ -108,9 +108,9 @@ export const Header: React.FC<HeaderProps> = ({ onMobileMenuToggle, isMobileMenu
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 text-lg tracking-tight">SkyGuard AI</span>
+                    <span className="font-bold text-slate-900 text-lg tracking-tight">SkyGuard AI</span>x
                   </div>
-                  <p className="text-xs text-slate-500 hidden sm:block">AWS Monitoring Network (6 Nodes)</p>
+                  <p className="text-xs text-slate-500 hidden sm:block">AWS Data Quality & Anomaly Monitoring</p>
                 </div>
               </div>
             </div>
